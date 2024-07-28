@@ -1,22 +1,25 @@
 #include "GPUProgramCompiler.hpp"
 
 #include "GLEW/glew.h"
+#include "Boundable/Boundable.hpp"
 #include "Shaders/ShaderSpawner.hpp"
 
-GPUPRogramCompiler::GPUPRogramCompiler(ShaderSpawner&& vertexSpawner,
-        ShaderSpawner&& fragmentSpawner)
-    : m_VertextSpawner{ std::move(vertexSpawner) }, 
+GPUProgram::GPUProgram(Shader&& vertexSpawner,
+    Shader&& fragmentSpawner)
+    : Boundable{ GL_PROGRAM }, m_VertextSpawner{ std::move(vertexSpawner) },
     m_FragmentSpawner{ std::move(fragmentSpawner) }
-{}
+{
+    Generate();
+}
 
-GPUPRogramCompiler::ProgramID GPUPRogramCompiler::CompileProgram()
+void GPUProgram::CompileProgram()
     const noexcept
 {
     const ProgramID programID = glCreateProgram();
     
-    const ShaderSpawner::ShaderID vertexID = 
+    const Shader::ShaderID vertexID = 
         m_VertextSpawner.SpawnShader();
-    const ShaderSpawner::ShaderID fragmentID = 
+    const Shader::ShaderID fragmentID = 
         m_FragmentSpawner.SpawnShader();
 
     glAttachShader(programID, vertexID);
@@ -28,4 +31,14 @@ GPUPRogramCompiler::ProgramID GPUPRogramCompiler::CompileProgram()
     glDeleteShader(fragmentID);    
 
     return programID;
+}
+
+void GPUProgram::Generate() noexcept
+{
+    m_ID = glCreateProgram(); 
+
+    const Shader::ShaderID vertexID = 
+        m_VertextSpawner.SpawnShader();
+    const Shader::ShaderID fragmentID = 
+        m_FragmentSpawner.SpawnShader();
 }
