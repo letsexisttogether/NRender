@@ -1,0 +1,7 @@
+# Build
+.cache/
+build/
+
+# Nvim 
+compile_commands.json
+neovim.json
