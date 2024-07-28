@@ -2,6 +2,11 @@
 .cache/
 build/
 
+
 # Nvim 
 compile_commands.json
 neovim.json
+
+# Dependencies
+Dependencies/**/*.h
+Dependencies/**/*.lib
