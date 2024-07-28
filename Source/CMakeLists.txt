@@ -1,0 +1,10 @@
+target_sources(${PROJECT_NAME}
+    PRIVATE Main.cpp)
+
+target_include_directories(${PROJECT_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_subdirectory(Shaders)
+add_subdirectory(GPUProgram)
+add_subdirectory(Boundable)
+add_subdirectory(Buffer)
