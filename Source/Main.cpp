@@ -1,14 +1,14 @@
 #include "Buffer/VertexBuffer.hpp"
+#include "VertexArray/VertexArray.hpp"
 #include <iostream>
-#include <vector>
 
 #define GLEW_STATIC
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
-#include "GPUProgram/GPUProgramCompiler.hpp"
-#include "Shaders/ShaderSpawner.hpp"
+#include "GPUProgram/GPUProgram.hpp"
+#include "Shaders/Shader.hpp"
 
 std::int32_t main()
 {
@@ -36,62 +36,6 @@ std::int32_t main()
         return EXIT_FAILURE;
     }
 
-    std::cout << "Hello, CloseGH again" << std::endl;
-
-    const std::vector<float> vertices
-    {
-        0.5f,  0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-
-        -0.2f, -0.2f, 0.0f,
-        -0.5, 0.5f, 0.0f,
-        0.2, 0.5, 0.0f
-
-    };
-    const std::vector<std::uint32_t> indices
-    {
-        0, 1, 3,
-        1, 2, 3
-    };
-
-    std::uint32_t vaoID{};
-    glGenVertexArrays(1, &vaoID);
-    glBindVertexArray(vaoID);
-
-    std::uint32_t vboID{};
-    glGenBuffers(1, &vboID);
-    glBindBuffer(GL_ARRAY_BUFFER, vboID);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
-        vertices.data(), GL_STATIC_DRAW);
-
-    VertexBuffer vertexBuffer 
-    { 
-        {
-            0.5f,  0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f
-        }
-    };
-
-    vertexBuffer.FillData();
-
-    /*
-    std::uint32_t eboID{};
-    glGenBuffers(1, &eboID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(std::uint32_t),
-        indices.data(), GL_STATIC_DRAW);
-    */
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-        3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
     // Generate vertex array object
     // Generate some buffer 
     // Bind it to GL_ARRAY_BUFFER
@@ -100,7 +44,45 @@ std::int32_t main()
     // Enable the attribute
     // Unbind the buffer 
 
-    ShaderSpawner vertexSpawner
+    std::cout << "Hello, CloseGH again" << std::endl;
+
+    VertexArray firstTriangle{};
+    firstTriangle.Bind();
+    
+    VertexBuffer firstVertecies 
+    { 
+        {
+            0.5f,  0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f
+        }
+    };
+    firstVertecies.Bind();
+    firstVertecies.FillData();
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+        3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    VertexArray secondTriangle{};
+    secondTriangle.Bind();
+
+    VertexBuffer secondVertecies
+    {
+        {
+            -0.5f, 0.6f, 0.0f,
+            -0.5f, -0.4f, 0.0f,
+            0.5f, 0.6f, 0.0f
+        }
+    };
+    secondVertecies.Bind();
+    secondVertecies.FillData();
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+        3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    Shader firstVertexShader
     {
         GL_VERTEX_SHADER,
         {
@@ -112,7 +94,7 @@ std::int32_t main()
             "}\0"
         }
     };
-    ShaderSpawner fragmentSpawner 
+    Shader firstFragmenShader 
     {
         GL_FRAGMENT_SHADER,
         {
@@ -125,31 +107,60 @@ std::int32_t main()
         }
     };
 
-    const GPUPRogramCompiler programCompiler
-    { 
-        std::move(vertexSpawner),
-        std::move(fragmentSpawner)
+    Shader secondVertexShader{ firstVertexShader };
+    Shader secondFragmenShader
+    {
+        GL_FRAGMENT_SHADER,
+        {
+            "#version 330 core\n"
+            "out vec4 color;\n"
+            "void main()\n"
+            "{\n"
+            "   color = vec4(1.0f, 0.9f, 0.0f, 1.0f);\n"
+            "}\0"
+        }
     };
 
-    const GPUPRogramCompiler::ProgramID programID =
-        programCompiler.CompileProgram();
+    firstVertexShader.Compile();
+    firstFragmenShader.Compile();
+
+    GPUProgram firstProgram 
+    { 
+        std::move(firstVertexShader),
+        std::move(firstFragmenShader)
+    };
+    firstProgram.Link();
+
+    secondVertexShader.Compile();
+    secondFragmenShader.Compile();
+
+    GPUProgram secondProgram
+    {
+        std::move(secondVertexShader),
+        std::move(secondFragmenShader)
+    };
+    secondProgram.Link();
 
     while (!glfwWindowShouldClose(window))
     {
         // glClearColor(1.0f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(programID);
-        glBindVertexArray(vaoID);
+        firstProgram.Bind();
 
-        glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.GetCount());
+        firstTriangle.Bind();
+        glDrawArrays(GL_TRIANGLES, 0, firstVertecies.GetCount());
+
+        secondProgram.Bind();
+
+        secondTriangle.Bind();
+        glDrawArrays(GL_TRIANGLES, 0, secondVertecies.GetCount());
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     glfwTerminate();
-    return EXIT_SUCCESS;
     
     return EXIT_SUCCESS;
 }

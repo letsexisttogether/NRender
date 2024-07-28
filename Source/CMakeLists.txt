@@ -7,4 +7,5 @@ target_include_directories(${PROJECT_NAME}
 add_subdirectory(Shaders)
 add_subdirectory(GPUProgram)
 add_subdirectory(Boundable)
+add_subdirectory(VertexArray)
 add_subdirectory(Buffer)
