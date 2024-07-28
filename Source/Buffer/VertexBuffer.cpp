@@ -4,7 +4,9 @@
 
 VertexBuffer::VertexBuffer(Data&& data)
     : Boundable{ GL_ARRAY_BUFFER }, m_Data{ std::move(data) }
-{}
+{
+    Generate();
+}
 
 void VertexBuffer::FillData() noexcept
 {
