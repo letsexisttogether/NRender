@@ -4,10 +4,14 @@
 
 Boundable::Boundable(const Type type)
     : m_Type{ type }
-{
-    glGenBuffers(1, &m_ID);
-}
+{}
 
+Boundable::~Boundable() 
+{
+    UnBind();
+
+    glDeleteBuffers(1, &m_ID);
+}
 
 void Boundable::Bind() noexcept
 {
@@ -22,4 +26,10 @@ void Boundable::UnBind() noexcept
 Boundable::BoundableID Boundable::GetID() const noexcept
 {
     return m_ID;
+}
+
+
+void Boundable::Generate() noexcept
+{
+    glGenBuffers(1, &m_ID);
 }
