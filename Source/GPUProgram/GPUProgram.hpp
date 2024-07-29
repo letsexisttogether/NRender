@@ -5,7 +5,7 @@
 #include "Boundable/Boundable.hpp"
 #include "Shaders/Shader.hpp"
 
-class GPUProgram : Boundable
+class GPUProgram : public Boundable
 {
 public:
     GPUProgram() = delete;
