@@ -9,3 +9,5 @@ add_subdirectory(GPUProgram)
 add_subdirectory(Boundable)
 add_subdirectory(VertexArray)
 add_subdirectory(Buffer)
+
+add_subdirectory(FileReader)

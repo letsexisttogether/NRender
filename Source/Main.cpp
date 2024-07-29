@@ -1,4 +1,5 @@
 #include "Buffer/VertexBuffer.hpp"
+#include "FileReader/FileReader.hpp"
 #include "VertexArray/VertexArray.hpp"
 #include <iostream>
 
@@ -46,6 +47,13 @@ std::int32_t main()
 
     std::cout << "Hello, CloseGH again" << std::endl;
 
+    FileReader reader{};
+
+    const std::string shadersPath
+    {
+        "D:/Projects/OPPL/Shaders/"
+    };
+    
     VertexArray firstTriangle{};
     firstTriangle.Bind();
     
@@ -85,40 +93,19 @@ std::int32_t main()
     Shader firstVertexShader
     {
         GL_VERTEX_SHADER,
-        {
-            "#version 330 core\n"
-            "layout (location = 0) in vec3 aPos;\n"
-            "void main()\n"
-            "{\n"
-            "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-            "}\0"
-        }
+        reader.Read(shadersPath + "Default.vert")
     };
     Shader firstFragmenShader 
     {
         GL_FRAGMENT_SHADER,
-        {
-            "#version 330 core\n"
-            "out vec4 color;\n"
-            "void main()\n"
-            "{\n"
-            "   color = vec4(1.0f, 0.2f, 0.3f, 1.0f);\n"
-            "}\0"
-        }
+        reader.Read(shadersPath + "Pink.frag")
     };
 
     Shader secondVertexShader{ firstVertexShader };
     Shader secondFragmenShader
     {
         GL_FRAGMENT_SHADER,
-        {
-            "#version 330 core\n"
-            "out vec4 color;\n"
-            "void main()\n"
-            "{\n"
-            "   color = vec4(1.0f, 0.9f, 0.0f, 1.0f);\n"
-            "}\0"
-        }
+        reader.Read(shadersPath + "Yellow.frag")
     };
 
     firstVertexShader.Compile();
