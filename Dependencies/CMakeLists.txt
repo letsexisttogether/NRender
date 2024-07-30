@@ -4,3 +4,5 @@ target_include_directories(${PROJECT_NAME}
 add_subdirectory(GLFW)
 add_subdirectory(GLEW)
 add_subdirectory(OpenGL)
+
+# add_subdirectory(STB)
