@@ -28,7 +28,6 @@ Boundable::BoundableID Boundable::GetID() const noexcept
     return m_ID;
 }
 
-
 void Boundable::Generate() noexcept
 {
     glGenBuffers(1, &m_ID);

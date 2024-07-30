@@ -9,5 +9,7 @@ add_subdirectory(GPUProgram)
 add_subdirectory(Boundable)
 add_subdirectory(VertexArray)
 add_subdirectory(Buffer)
+add_subdirectory(Texture)
 
 add_subdirectory(FileReader)
+add_subdirectory(TextureSpawn)

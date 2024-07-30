@@ -1,18 +1,23 @@
-#include "Buffer/VertexBuffer.hpp"
-#include "FileReader/FileReader.hpp"
-#include "VertexArray/VertexArray.hpp"
 #include <cmath>
+#include <cstdint>
 #include <iostream>
 
 #define GLEW_STATIC
+#define STB_IMAGE_IMPLEMENTATION
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
+#include "STB/stb_image.h"
 
+#include "Buffer/VertexBuffer.hpp"
+#include "FileReader/FileReader.hpp"
+#include "VertexArray/VertexArray.hpp"
 #include "GPUProgram/GPUProgram.hpp"
 #include "Shaders/Shader.hpp"
+#include "Texture/Texture.hpp"
+#include "TextureSpawn/TextureSpawner.hpp"
 
-std::int32_t main()
+std::int32_t main(std::int32_t argc, char** argv)
 {
     if (!glfwInit())
     {
@@ -38,13 +43,16 @@ std::int32_t main()
         return EXIT_FAILURE;
     }
 
-    // Generate vertex array object
-    // Generate some buffer 
-    // Bind it to GL_ARRAY_BUFFER
-    // Fill GL_ARRAY_BUFFER with data
-    // Specify the attribute 
-    // Enable the attribute
-    // Unbind the buffer 
+    const TextureSpawner::TexturePath texturesPath
+    {
+        "D:/Projects/OPPL/Textures/"
+    };
+
+    TextureSpawner spawner{ TexFillParams{}, GL_TEXTURE0 };
+    
+    Texture firstTexture{ spawner.LoadTexture(texturesPath + argv[1]) };
+
+    Texture secondTexture{ spawner.LoadTexture(texturesPath + argv[2]) };
 
     std::cout << "Hello, CloseGH again" << std::endl;
 
@@ -54,28 +62,32 @@ std::int32_t main()
     {
         "D:/Projects/OPPL/Shaders/"
     };
-    
+
     VertexArray firstTriangle{};
     firstTriangle.Bind();
-    
+
     VertexBuffer firstVertecies 
     { 
         {
-            0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-            0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f 
+            0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+            0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.0f,
         }
     };
     firstVertecies.Bind();
     firstVertecies.FillData();
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-        6 * sizeof(float), (void*)0);
+        8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-        6 * sizeof(float), (void*)(3 * sizeof(float)));
+        8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
+        8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     Shader firstVertexShader
     {
@@ -112,6 +124,20 @@ std::int32_t main()
 
         firstProgram.Bind();
         glUniform3f(uniformLocation, offset, 0.0f, 0.0f);
+
+
+        const std::int32_t firstTextureLocation =
+            glGetUniformLocation(firstProgram.GetID(), "texture1");
+        const std::int32_t secondTextureLocation =
+            glGetUniformLocation(firstProgram.GetID(), "texture2");
+
+        glUniform1i(firstTextureLocation, firstTexture.GetSlot() 
+            - GL_TEXTURE0);
+        glUniform1i(secondTextureLocation, secondTexture.GetSlot() 
+            - GL_TEXTURE0);
+
+        firstTexture.Bind();
+        secondTexture.Bind();
 
         firstTriangle.Bind();
         glDrawArrays(GL_TRIANGLES, 0, firstVertecies.GetCount());
