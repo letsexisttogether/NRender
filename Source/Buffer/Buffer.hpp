@@ -26,7 +26,7 @@ public:
 
     Buffer(Data&& data);
 
-    ~Buffer() = default;
+    ~Buffer();
 
     void FillData() noexcept;
 
@@ -41,6 +41,12 @@ BufferTDef()::Buffer(Data&& data)
     : Boundable{ _BufferType }, m_Data{ std::move(data) }
 {
     Generate();
+}
+
+
+BufferTDef()::~Buffer()
+{
+    glDeleteBuffers(1, &m_ID);
 }
 
 BufferTDef(void)::Buffer::FillData() noexcept

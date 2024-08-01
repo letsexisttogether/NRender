@@ -9,8 +9,6 @@ Boundable::Boundable(const Type type)
 Boundable::~Boundable() 
 {
     UnBind();
-
-    glDeleteBuffers(1, &m_ID);
 }
 
 void Boundable::Bind() noexcept
