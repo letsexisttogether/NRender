@@ -3,10 +3,16 @@
 #include "Boundable/Boundable.hpp"
 #include "GLEW/glew.h"
 
-Shader::Shader(const Type type, const ShaderSource& source)
+Shader::Shader(const Type type, const ShaderSource& source,
+    const bool shouldPrepare)
     : Boundable{ type }, m_ShaderSource{ source }
 {
     Generate();
+
+    if (shouldPrepare)
+    {
+        Compile();
+    }
 }
 
 void Shader::Bind() noexcept

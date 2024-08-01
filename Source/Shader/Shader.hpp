@@ -14,7 +14,8 @@ public:
     Shader(const Shader&) = default;
     Shader(Shader&&) = default;
 
-    Shader(const Type type, const ShaderSource& source);
+    Shader(const Type type, const ShaderSource& source, 
+        const bool shouldPrepare = true);
 
     ~Shader() = default;
 
