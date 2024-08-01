@@ -12,7 +12,6 @@ uniform float secondStrength;
 
 vec2 ReverseColor(in vec2 color)
 {
-    color.x = 1.0 - color.x;
     
     return color;
 }

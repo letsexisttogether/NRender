@@ -11,12 +11,14 @@
 #include "STB/stb_image.h"
 
 #include "Buffer/VertexBuffer.hpp"
+#include "Buffer/IndexBuffer.hpp"
 #include "FileReader/FileReader.hpp"
 #include "VertexArray/VertexArray.hpp"
 #include "GPUProgram/GPUProgram.hpp"
 #include "Shaders/Shader.hpp"
 #include "Texture/Texture.hpp"
 #include "TextureSpawn/TextureSpawner.hpp"
+#include "AttributePointer/AttributePointer.hpp"
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
@@ -59,9 +61,7 @@ std::int32_t main(std::int32_t argc, char** argv)
     }
     
     Texture firstTexture{ spawner.LoadTexture(texturesPath + argv[1]) };
-
     Texture secondTexture{ spawner.LoadTexture(texturesPath + argv[2]) };
-
 
     std::cout << "Hello, CloseGH again" << std::endl;
 
@@ -73,31 +73,33 @@ std::int32_t main(std::int32_t argc, char** argv)
     };
 
     VertexArray firstTriangle{};
-    firstTriangle.Bind();
 
     VertexBuffer firstVertecies 
     { 
         {
-            0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+            -0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
             -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-            0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.0f,
+            0.5f, 0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+            0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 0.0f,   1.0f, 0.0f
         }
     };
 
-    firstVertecies.Bind();
-    firstVertecies.FillData();
+    IndexBuffer firstIndices
+    {
+        {
+            0, 1, 2,
+            1, 2, 3
+        }
+    };
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-        8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    AttributePointer firstAttribPointer{ 0, 3, GL_FALSE, 8, 0 };
+    firstAttribPointer.Bind();
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-        8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    AttributePointer secondAttribPointer{ 1, 3, GL_FALSE, 8, 3 };
+    secondAttribPointer.Bind();
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
-        8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    AttributePointer thirdAttribPointer{ 2, 2, GL_FALSE, 8, 6 };
+    thirdAttribPointer.Bind();
 
     Shader firstVertexShader
     {
@@ -118,7 +120,6 @@ std::int32_t main(std::int32_t argc, char** argv)
         std::move(firstVertexShader),
         std::move(firstFragmenShader)
     };
-    firstProgram.Link();
 
     const float secondStrength = ((argc > 3) ? (std::atof(argv[3])) : (0.5));
 
@@ -156,7 +157,7 @@ std::int32_t main(std::int32_t argc, char** argv)
         secondTexture.Bind();
 
         firstTriangle.Bind();
-        glDrawArrays(GL_TRIANGLES, 0, firstVertecies.GetCount());
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
