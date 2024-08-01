@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <iostream>
 
 #define GLEW_STATIC
@@ -49,10 +50,18 @@ std::int32_t main(std::int32_t argc, char** argv)
     };
 
     TextureSpawner spawner{ TexFillParams{}, GL_TEXTURE0 };
+
+    if (argc < 3)
+    {
+        std::cerr << "The textures' names were not provided" << std::endl;
+
+        return EXIT_FAILURE;
+    }
     
     Texture firstTexture{ spawner.LoadTexture(texturesPath + argv[1]) };
 
     Texture secondTexture{ spawner.LoadTexture(texturesPath + argv[2]) };
+
 
     std::cout << "Hello, CloseGH again" << std::endl;
 
@@ -74,6 +83,7 @@ std::int32_t main(std::int32_t argc, char** argv)
             0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.5f, 1.0f,
         }
     };
+
     firstVertecies.Bind();
     firstVertecies.FillData();
 
@@ -110,6 +120,8 @@ std::int32_t main(std::int32_t argc, char** argv)
     };
     firstProgram.Link();
 
+    const float secondStrength = ((argc > 3) ? (std::atof(argv[3])) : (0.5));
+
     while (!glfwWindowShouldClose(window))
     {
         // glClearColor(1.0f, 0.2f, 0.3f, 1.0f);
@@ -125,7 +137,6 @@ std::int32_t main(std::int32_t argc, char** argv)
         firstProgram.Bind();
         glUniform3f(uniformLocation, offset, 0.0f, 0.0f);
 
-
         const std::int32_t firstTextureLocation =
             glGetUniformLocation(firstProgram.GetID(), "texture1");
         const std::int32_t secondTextureLocation =
@@ -135,6 +146,11 @@ std::int32_t main(std::int32_t argc, char** argv)
             - GL_TEXTURE0);
         glUniform1i(secondTextureLocation, secondTexture.GetSlot() 
             - GL_TEXTURE0);
+
+        const std::int32_t secondStrengthLocation = 
+            glGetUniformLocation(firstProgram.GetID(), "secondStrength");
+
+        glUniform1f(secondStrengthLocation, secondStrength);
 
         firstTexture.Bind();
         secondTexture.Bind();

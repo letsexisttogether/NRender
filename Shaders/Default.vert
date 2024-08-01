@@ -13,5 +13,5 @@ void main()
 {
     gl_Position = vec4(aPos - offset, 1.0);
     vertexColor = vec4(aColor, 1.0f);
-    texCoord = 2.0 * aTexCoord; 
+    texCoord = aTexCoord; 
 }
