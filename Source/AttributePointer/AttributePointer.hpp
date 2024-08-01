@@ -19,7 +19,7 @@ public:
 
     AttributePointer(const BoundableID id, const Count count,
         const IsNormalized isNormalizzed, const Stride stride,
-        const Offset offset);
+        const Offset offset, const bool shouldPrepare = true);
 
     ~AttributePointer();
 

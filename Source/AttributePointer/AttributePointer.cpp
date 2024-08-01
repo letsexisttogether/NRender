@@ -4,13 +4,19 @@
 #include "GLEW/glew.h"
 
 AttributePointer::AttributePointer(const BoundableID id, const Count count,
-    const IsNormalized isNormalizzed, const Stride stride, const Offset offset)
+    const IsNormalized isNormalizzed, const Stride stride, const Offset offset,
+    const bool shouldPrepare)
     : Boundable{ GL_FLOAT }, m_Count{ count }, m_IsNormalized{ isNormalizzed }, 
     m_Stride{ stride }, m_Offset{ offset }
 {
     m_ID = id;
 
     Generate();
+
+    if (shouldPrepare)
+    {
+        Bind();
+    }
 }
 
 AttributePointer::~AttributePointer()

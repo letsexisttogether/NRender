@@ -1,7 +1,6 @@
 #include "GPUProgram.hpp"
 
 #include "GLEW/glew.h"
-#include "Shaders/Shader.hpp"
 
 GPUProgram::GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
     const bool shouldPrepare)
@@ -39,7 +38,38 @@ void GPUProgram::Link() noexcept
     glLinkProgram(m_ID);
 }
 
+void GPUProgram::SetUniform(const UniformName name, const float value)
+    noexcept
+{
+    const UniformLocation location = GetLocation(name);
+
+    glUniform1f(location, value);
+}
+
+void GPUProgram::SetUniform(const UniformName name, const std::int32_t value)
+    noexcept
+{
+    const UniformLocation location = GetLocation(name);
+
+    glUniform1i(location, value);
+}
+
+void GPUProgram::SetUniform(const UniformName name, const Vector& vector)
+    noexcept
+{
+    const UniformLocation location = GetLocation(name);
+
+    glUniform3f(location, vector.X, vector.Y, vector.Z);
+}
+
 void GPUProgram::Generate() noexcept
 {
     m_ID = glCreateProgram(); 
 }
+
+GPUProgram::UniformLocation GPUProgram::GetLocation(const UniformName name)
+    const noexcept
+{
+    return glGetUniformLocation(m_ID, name);
+}
+

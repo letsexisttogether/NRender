@@ -15,7 +15,7 @@
 #include "FileReader/FileReader.hpp"
 #include "VertexArray/VertexArray.hpp"
 #include "GPUProgram/GPUProgram.hpp"
-#include "Shaders/Shader.hpp"
+#include "Shader/Shader.hpp"
 #include "Texture/Texture.hpp"
 #include "TextureSpawn/TextureSpawner.hpp"
 #include "AttributePointer/AttributePointer.hpp"
@@ -93,13 +93,8 @@ std::int32_t main(std::int32_t argc, char** argv)
     };
 
     AttributePointer firstAttribPointer{ 0, 3, GL_FALSE, 8, 0 };
-    firstAttribPointer.Bind();
-
     AttributePointer secondAttribPointer{ 1, 3, GL_FALSE, 8, 3 };
-    secondAttribPointer.Bind();
-
     AttributePointer thirdAttribPointer{ 2, 2, GL_FALSE, 8, 6 };
-    thirdAttribPointer.Bind();
 
     Shader firstVertexShader
     {
@@ -111,9 +106,6 @@ std::int32_t main(std::int32_t argc, char** argv)
         GL_FRAGMENT_SHADER,
         reader.Read(shadersPath + "Default.frag")
     };
-
-    firstVertexShader.Compile();
-    firstFragmenShader.Compile();
 
     GPUProgram firstProgram 
     { 
@@ -128,30 +120,17 @@ std::int32_t main(std::int32_t argc, char** argv)
         // glClearColor(1.0f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        const Boundable::BoundableID programID = firstProgram.GetID();
-        const Boundable::BoundableID uniformLocation = 
-            glGetUniformLocation(programID, "offset");
-
         const float timeValue = glfwGetTime();
         const float offset = (std::sin(timeValue));
 
         firstProgram.Bind();
-        glUniform3f(uniformLocation, offset, 0.0f, 0.0f);
 
-        const std::int32_t firstTextureLocation =
-            glGetUniformLocation(firstProgram.GetID(), "texture1");
-        const std::int32_t secondTextureLocation =
-            glGetUniformLocation(firstProgram.GetID(), "texture2");
+        firstProgram.SetUniform("offset", { offset, 0.0f, 0.0f });
 
-        glUniform1i(firstTextureLocation, firstTexture.GetSlot() 
-            - GL_TEXTURE0);
-        glUniform1i(secondTextureLocation, secondTexture.GetSlot() 
-            - GL_TEXTURE0);
+        firstProgram.SetUniform("texture1", firstTexture.GetSlot());
+        firstProgram.SetUniform("texture2", secondTexture.GetSlot());
 
-        const std::int32_t secondStrengthLocation = 
-            glGetUniformLocation(firstProgram.GetID(), "secondStrength");
-
-        glUniform1f(secondStrengthLocation, secondStrength);
+        firstProgram.SetUniform("secondStrength", secondStrength);
 
         firstTexture.Bind();
         secondTexture.Bind();

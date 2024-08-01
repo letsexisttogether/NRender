@@ -31,6 +31,7 @@ public:
     void FillData() noexcept;
 
     Slot GetSlot() const noexcept;
+    Slot GetRawSlot() const noexcept;
 
     Texture& operator = (const Texture&) = delete;
     Texture& operator = (Texture&&) = delete;

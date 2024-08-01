@@ -70,5 +70,10 @@ void Texture::Generate() noexcept
 
 Texture::Slot Texture::GetSlot() const noexcept
 {
+    return m_Slot - GL_TEXTURE0;
+}
+
+Texture::Slot Texture::GetRawSlot() const noexcept
+{
     return m_Slot;
 }
