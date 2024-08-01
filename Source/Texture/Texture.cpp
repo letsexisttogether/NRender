@@ -5,11 +5,19 @@
 #include "GLEW/glew.h"
 
 Texture::Texture(Data const data, const Resolution width,
-    const Resolution height, const TexFillParams& fillParams, const Slot slot)
+    const Resolution height, const TexFillParams& fillParams, const Slot slot,
+    const bool shouldPrepare)
     : Boundable{ GL_TEXTURE_2D }, m_Data{ data }, m_Width{ width }, 
     m_Height{ height }, m_FillParams{ fillParams }, m_Slot{ slot }
 {
     Generate();
+
+    if (shouldPrepare)
+    {
+        Bind();
+        SetParameters();
+        FillData();
+    }
 }
 
 Texture::~Texture()
@@ -19,8 +27,8 @@ Texture::~Texture()
 
 void Texture::SetParameters() noexcept
 {
-    glTexParameteri(m_Type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(m_Type, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(m_Type, GL_TEXTURE_WRAP_S, GL_LINEAR);
+    glTexParameteri(m_Type, GL_TEXTURE_WRAP_T, GL_LINEAR);
 
     glTexParameteri(m_Type, GL_TEXTURE_MIN_FILTER,
         GL_LINEAR_MIPMAP_LINEAR);

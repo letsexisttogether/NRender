@@ -24,7 +24,7 @@ public:
     Buffer(const Buffer&) = default;
     Buffer(Buffer&&) = default;
 
-    Buffer(Data&& data);
+    Buffer(Data&& data, const bool shouldPrepare = true);
 
     ~Buffer();
 
@@ -37,12 +37,17 @@ private:
 };
 
 
-BufferTDef()::Buffer(Data&& data)
+BufferTDef()::Buffer(Data&& data, const bool shouldPrepare)
     : Boundable{ _BufferType }, m_Data{ std::move(data) }
 {
     Generate();
-}
 
+    if (shouldPrepare)
+    {   
+        Bind();
+        FillData();
+    }
+}
 
 BufferTDef()::~Buffer()
 {

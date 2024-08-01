@@ -3,7 +3,8 @@
 #include "GLEW/glew.h"
 #include "Shaders/Shader.hpp"
 
-GPUProgram::GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner)
+GPUProgram::GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
+    const bool shouldPrepare)
     : m_VertextSpawner{ std::move(vertexSpawner) },
     m_FragmentSpawner{ std::move(fragmentSpawner) }
 {
@@ -11,6 +12,13 @@ GPUProgram::GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner)
 
     m_VertextSpawner.SetProgramID(m_ID);
     m_FragmentSpawner.SetProgramID(m_ID);
+
+    if (shouldPrepare)
+    {
+        Link();
+
+        Bind();
+    }
 }
 
 void GPUProgram::Bind() noexcept

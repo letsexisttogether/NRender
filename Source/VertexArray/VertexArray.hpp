@@ -5,9 +5,10 @@
 class VertexArray : public Boundable 
 {
 public:
-    VertexArray();
     VertexArray(const VertexArray&) = default;
     VertexArray(VertexArray&&) = default;
+
+    VertexArray(const bool shouldPrepare = true);
 
     ~VertexArray();
 

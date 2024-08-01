@@ -2,9 +2,14 @@
 
 #include "GLEW/glew.h"
 
-VertexArray::VertexArray() 
+VertexArray::VertexArray(const bool shouldPrepare) 
 {
     Generate();
+
+    if (shouldPrepare)
+    {
+        Bind();
+    }
 }
 
 VertexArray::~VertexArray()

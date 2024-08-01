@@ -12,7 +12,8 @@ public:
     GPUProgram(const GPUProgram&) = delete;
     GPUProgram(GPUProgram&&) = default;
 
-    GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner);
+    GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
+        const bool shouldPrepare = true);
 
     ~GPUProgram() = default;
 

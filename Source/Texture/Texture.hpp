@@ -19,7 +19,8 @@ public:
     Texture(Texture&&) = default;
 
     Texture(Data const data, const Resolution width, const Resolution height,
-        const TexFillParams& fillParams, const Slot slot);
+        const TexFillParams& fillParams, const Slot slot,
+        const bool shouldPrepare = true);
 
     ~Texture();
 

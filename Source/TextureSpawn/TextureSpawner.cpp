@@ -21,9 +21,6 @@ Texture TextureSpawner::LoadTexture(const TexturePath& path) noexcept
         &nrChannels, 0);
 
     Texture texture{ data, width, height, m_FillParams, m_Slot };
-    texture.Bind();
-    texture.SetParameters();
-    texture.FillData();
 
     ++m_Slot;
 
