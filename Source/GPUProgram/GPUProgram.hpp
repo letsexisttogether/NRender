@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Boundable/Boundable.hpp"
+#include "GLM/ext/matrix_float4x4.hpp"
 #include "Shader/Shader.hpp"
 #include "Vector/Vector.hpp"
 
@@ -31,6 +32,8 @@ public:
     void SetUniform(const UniformName name, const std::int32_t value) noexcept;
 
     void SetUniform(const UniformName name, const Vector& vector) noexcept;
+
+    void SetUniform(const UniformName name, const glm::mat4& matrix) noexcept;
 
     GPUProgram& operator = (const GPUProgram&) noexcept
         = delete;

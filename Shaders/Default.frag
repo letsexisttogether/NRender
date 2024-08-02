@@ -2,7 +2,6 @@
 
 out vec4 color;
 
-in vec4 vertexColor;
 in vec2 texCoord;
 
 uniform sampler2D texture1;
@@ -12,7 +11,6 @@ uniform float secondStrength;
 
 vec2 ReverseColor(in vec2 color)
 {
-    
     return color;
 }
 

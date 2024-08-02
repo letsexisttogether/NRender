@@ -1,3 +1,4 @@
+#include "GLM/ext/matrix_transform.hpp"
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
@@ -6,9 +7,12 @@
 #define GLEW_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "GLEW/glew.h"
-#include "GLFW/glfw3.h"
-#include "STB/stb_image.h"
+#include <GLEW/glew.h>
+#include <GLFW/glfw3.h>
+#include <STB/stb_image.h>
+#include <GLM/glm.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/trigonometric.hpp>
 
 #include "Buffer/VertexBuffer.hpp"
 #include "Buffer/IndexBuffer.hpp"
@@ -65,7 +69,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     std::cout << "Hello, CloseGH again" << std::endl;
 
-    FileReader reader{};
+    const FileReader reader{};
 
     const std::string shadersPath
     {
@@ -77,24 +81,52 @@ std::int32_t main(std::int32_t argc, char** argv)
     VertexBuffer firstVertecies 
     { 
         {
-            -0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-            0.5f, 0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
-            0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 0.0f,   1.0f, 0.0f
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
         }
     };
 
-    IndexBuffer firstIndices
-    {
-        {
-            0, 1, 2,
-            1, 2, 3
-        }
-    };
-
-    AttributePointer firstAttribPointer{ 0, 3, GL_FALSE, 8, 0 };
-    AttributePointer secondAttribPointer{ 1, 3, GL_FALSE, 8, 3 };
-    AttributePointer thirdAttribPointer{ 2, 2, GL_FALSE, 8, 6 };
+    AttributePointer firstAttribPointer{ 0, 3, GL_FALSE, 5, 0 };
+    AttributePointer secondAttribPointer{ 1, 2, GL_FALSE, 5, 3 };
 
     Shader firstVertexShader
     {
@@ -115,28 +147,42 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const float secondStrength = ((argc > 3) ? (std::atof(argv[3])) : (0.5));
 
+    glEnable(GL_DEPTH_TEST);
+
     while (!glfwWindowShouldClose(window))
     {
         // glClearColor(1.0f, 0.2f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        const float timeValue = glfwGetTime();
-        const float offset = (std::sin(timeValue));
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         firstProgram.Bind();
 
-        firstProgram.SetUniform("offset", { offset, 0.0f, 0.0f });
+        const float time = glfwGetTime();
+
+        const glm::mat4 model{ glm::rotate(glm::mat4{ 1.0f }, 
+            time * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)) };
+        firstProgram.SetUniform("model", model);
+    
+        const glm::mat4 view{ glm::translate(glm::mat4{ 1.0f }, 
+            glm::vec3{ 0.0f, 0.0f, -3.0f }) };
+        firstProgram.SetUniform("view", view);
+
+        const glm::mat4 projection{ glm::perspective
+            (glm::radians(45.0f), 1000.0f / 600.0f, 0.1f, 100.0f) };
+        firstProgram.SetUniform("projection", projection);
+
+        const glm::mat4 scale{ glm::scale(glm::mat4{ 1.0f }, glm::vec3{ 1.0f }) };
+        firstProgram.SetUniform("scale", scale);
+
 
         firstProgram.SetUniform("texture1", firstTexture.GetSlot());
         firstProgram.SetUniform("texture2", secondTexture.GetSlot());
-
         firstProgram.SetUniform("secondStrength", secondStrength);
 
         firstTexture.Bind();
         secondTexture.Bind();
 
         firstTriangle.Bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

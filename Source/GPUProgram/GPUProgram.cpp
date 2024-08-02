@@ -1,6 +1,7 @@
 #include "GPUProgram.hpp"
 
-#include "GLEW/glew.h"
+#include <GLEW/glew.h>
+#include <GLM/gtc/type_ptr.hpp>
 
 GPUProgram::GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
     const bool shouldPrepare)
@@ -60,6 +61,15 @@ void GPUProgram::SetUniform(const UniformName name, const Vector& vector)
     const UniformLocation location = GetLocation(name);
 
     glUniform3f(location, vector.X, vector.Y, vector.Z);
+}
+
+
+void GPUProgram::SetUniform(const UniformName name, const glm::mat4& matrix)
+    noexcept
+{
+    const UniformLocation location = GetLocation(name);
+
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void GPUProgram::Generate() noexcept
