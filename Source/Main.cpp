@@ -1,4 +1,3 @@
-#include "GLM/ext/matrix_transform.hpp"
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
@@ -24,6 +23,27 @@
 #include "TextureSpawn/TextureSpawner.hpp"
 #include "AttributePointer/AttributePointer.hpp"
 
+void ProcessInput(GLFWwindow* window);
+void MouseCallBack(GLFWwindow* window, double xpos, double ypos);
+
+const Texture::Resolution windowWidth = 1400;
+const Texture::Resolution windowHeight = 800;
+
+glm::vec3 cameraPosition{ 0.0f, 0.0f, 3.0f };
+glm::vec3 cameraFront{ 0.0f, 0.0f, -1.0f };
+const glm::vec3 cameraUp{ 0.0f, 1.0f, 0.0f };
+
+float yaw{ -90.0f };
+float pitch{};
+
+double deltaTime{};
+double lastFrameTime{};
+
+float lastX = 400;
+float lastY = 300;
+bool firstMouse = true;
+
+
 std::int32_t main(std::int32_t argc, char** argv)
 {
     if (!glfwInit())
@@ -38,11 +58,12 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(1000, 600, "CloseGH",
+    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "CloseGH",
         nullptr, nullptr);
 
     glfwMakeContextCurrent(window);
-    
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+
     if (glewInit() != GLEW_OK)
     {
         std::cerr << "Failed to initialize GLEW" << std::endl;
@@ -147,32 +168,35 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const float secondStrength = ((argc > 3) ? (std::atof(argv[3])) : (0.5));
 
+    const std::vector<glm::vec3> cubePositions 
+    {
+        glm::vec3{ 0.0f, 0.0f, 0.0f }, 
+        glm::vec3{ 2.0f, 5.0f, -15.0f }, 
+        glm::vec3{ -1.5f, -2.2f, -2.5f },  
+        glm::vec3{ -3.8f, -2.0f, -12.3f },  
+        glm::vec3{  2.4f, -0.4f, -3.5f },  
+        glm::vec3{ -1.7f, 3.0f, -7.5f },  
+        glm::vec3{ 1.3f, -2.0f, -2.5f },  
+        glm::vec3{ 1.5f, 2.0f, -2.5f }, 
+        glm::vec3{ 1.5f, 0.2f, -1.5f }, 
+        glm::vec3{ -1.3f, 1.0f, -1.5f }  
+    };
+
+    glfwSetCursorPosCallback(window, MouseCallBack);
+
     glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window))
     {
+        const float time = glfwGetTime();
+        deltaTime = time - lastFrameTime;
+        lastFrameTime = time;
+
+        ProcessInput(window);
         // glClearColor(1.0f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         firstProgram.Bind();
-
-        const float time = glfwGetTime();
-
-        const glm::mat4 model{ glm::rotate(glm::mat4{ 1.0f }, 
-            time * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)) };
-        firstProgram.SetUniform("model", model);
-    
-        const glm::mat4 view{ glm::translate(glm::mat4{ 1.0f }, 
-            glm::vec3{ 0.0f, 0.0f, -3.0f }) };
-        firstProgram.SetUniform("view", view);
-
-        const glm::mat4 projection{ glm::perspective
-            (glm::radians(45.0f), 1000.0f / 600.0f, 0.1f, 100.0f) };
-        firstProgram.SetUniform("projection", projection);
-
-        const glm::mat4 scale{ glm::scale(glm::mat4{ 1.0f }, glm::vec3{ 1.0f }) };
-        firstProgram.SetUniform("scale", scale);
-
 
         firstProgram.SetUniform("texture1", firstTexture.GetSlot());
         firstProgram.SetUniform("texture2", secondTexture.GetSlot());
@@ -182,7 +206,36 @@ std::int32_t main(std::int32_t argc, char** argv)
         secondTexture.Bind();
 
         firstTriangle.Bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        const glm::mat4 view{ glm::lookAt(cameraPosition, 
+            cameraPosition + cameraFront, cameraUp) };
+        firstProgram.SetUniform("view", view);
+
+        const glm::mat4 projection{ glm::perspective
+            (glm::radians(45.0f), windowWidth / static_cast<float>(windowHeight),
+             0.1f, 100.0f) };
+        firstProgram.SetUniform("projection", projection);
+
+        const glm::mat4 scale{ glm::scale(glm::mat4{ 1.0f }, glm::vec3{ 1.0f }) };
+        firstProgram.SetUniform("scale", scale);
+
+
+        for (std::uint32_t i = 0; i < 10; ++i) 
+        {
+            glm::mat4 model
+            { 
+                glm::translate(glm::mat4{ 1.0f }, cubePositions[i]) 
+            };
+
+            const float angle = i * 20.0f;
+
+            model = glm::rotate(model, glm::radians(angle),
+                glm::vec3{ 1.0f, 1.0f, 0.5f });
+
+            firstProgram.SetUniform("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -192,3 +245,64 @@ std::int32_t main(std::int32_t argc, char** argv)
     
     return EXIT_SUCCESS;
 }
+
+void ProcessInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
+
+    const float cameraSpeed = 2.0f * deltaTime;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+        cameraPosition += cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+        cameraPosition -= cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        cameraPosition -= glm::normalize(glm::cross(cameraFront, cameraUp))
+            * cameraSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+        cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp))
+            * cameraSpeed;
+    }
+}
+
+void MouseCallBack(GLFWwindow* window, double xpos, double ypos)
+{
+    const float sensitivity = 0.1f;
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+  
+    const float xoffset = (xpos - lastX) * sensitivity;
+    const float yoffset = (lastY - ypos) * sensitivity; 
+
+    lastX = xpos;
+    lastY = ypos;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    pitch = std::max(std::min(pitch, 89.0f), -89.0f);
+
+    const glm::vec3 direction
+    {
+        cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
+        sin(glm::radians(pitch)),
+        sin(glm::radians(yaw)) * cos(glm::radians(pitch))
+    };
+
+    cameraFront = glm::normalize(direction);
+}  
