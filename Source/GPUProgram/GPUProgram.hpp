@@ -2,10 +2,11 @@
 
 #include <memory>
 
+#include <GML/Matrix/MatrixDefenitions.hpp>
+
 #include "Boundable/Boundable.hpp"
-#include "GLM/ext/matrix_float4x4.hpp"
+#include "GML/Vector/VectorDefinitions.hpp"
 #include "Shader/Shader.hpp"
-#include "Vector/Vector.hpp"
 
 class GPUProgram : public Boundable
 {
@@ -31,9 +32,9 @@ public:
     void SetUniform(const UniformName name, const float value) noexcept;
     void SetUniform(const UniformName name, const std::int32_t value) noexcept;
 
-    void SetUniform(const UniformName name, const Vector& vector) noexcept;
+    void SetUniform(const UniformName name, const Vec3f& vector) noexcept;
 
-    void SetUniform(const UniformName name, const glm::mat4& matrix) noexcept;
+    void SetUniform(const UniformName name, const Mat4x4f& matrix) noexcept;
 
     GPUProgram& operator = (const GPUProgram&) noexcept
         = delete;
