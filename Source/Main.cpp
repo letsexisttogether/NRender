@@ -9,9 +9,10 @@
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 #include <STB/stb_image.h>
-#include <GLM/glm.hpp>
-#include <GLM/gtc/matrix_transform.hpp>
-#include <GLM/trigonometric.hpp>
+#include <GML/Matrix/Matrix.hpp>
+#include <GML/Variations/Transformation.hpp>
+#include <GML/Variations/Projection.hpp>
+#include <GML/Utility/Operations.hpp>
 
 #include "Buffer/VertexBuffer.hpp"
 #include "Buffer/IndexBuffer.hpp"
@@ -24,25 +25,9 @@
 #include "AttributePointer/AttributePointer.hpp"
 
 void ProcessInput(GLFWwindow* window);
-void MouseCallBack(GLFWwindow* window, double xpos, double ypos);
 
 const Texture::Resolution windowWidth = 1400;
 const Texture::Resolution windowHeight = 800;
-
-glm::vec3 cameraPosition{ 0.0f, 0.0f, 3.0f };
-glm::vec3 cameraFront{ 0.0f, 0.0f, -1.0f };
-const glm::vec3 cameraUp{ 0.0f, 1.0f, 0.0f };
-
-float yaw{ -90.0f };
-float pitch{};
-
-double deltaTime{};
-double lastFrameTime{};
-
-float lastX = 400;
-float lastY = 300;
-bool firstMouse = true;
-
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
@@ -103,16 +88,16 @@ std::int32_t main(std::int32_t argc, char** argv)
     { 
         {
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
             -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
             -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
             -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
@@ -123,24 +108,24 @@ std::int32_t main(std::int32_t argc, char** argv)
             -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
             -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
             -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
             -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
             -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
             -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
         }
@@ -168,33 +153,16 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const float secondStrength = ((argc > 3) ? (std::atof(argv[3])) : (0.5));
 
-    const std::vector<glm::vec3> cubePositions 
-    {
-        glm::vec3{ 0.0f, 0.0f, 0.0f }, 
-        glm::vec3{ 2.0f, 5.0f, -15.0f }, 
-        glm::vec3{ -1.5f, -2.2f, -2.5f },  
-        glm::vec3{ -3.8f, -2.0f, -12.3f },  
-        glm::vec3{  2.4f, -0.4f, -3.5f },  
-        glm::vec3{ -1.7f, 3.0f, -7.5f },  
-        glm::vec3{ 1.3f, -2.0f, -2.5f },  
-        glm::vec3{ 1.5f, 2.0f, -2.5f }, 
-        glm::vec3{ 1.5f, 0.2f, -1.5f }, 
-        glm::vec3{ -1.3f, 1.0f, -1.5f }  
-    };
 
-    glfwSetCursorPosCallback(window, MouseCallBack);
-
-    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window))
     {
         const float time = glfwGetTime();
-        deltaTime = time - lastFrameTime;
-        lastFrameTime = time;
 
         ProcessInput(window);
         // glClearColor(1.0f, 0.2f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         firstProgram.Bind();
 
@@ -207,35 +175,18 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         firstTriangle.Bind();
 
-        const glm::mat4 view{ glm::lookAt(cameraPosition, 
-            cameraPosition + cameraFront, cameraUp) };
+        const Mat4x4f model{ GetRotation(time * ConvertToRadians(50.0f),
+            Vec3f{ 0.5f, 1.0f, 0.0f }) };
+        firstProgram.SetUniform("model", model);
+
+        const Mat4x4f view{ GetTranslation(Vec3f{ 0.0f, 0.0f, -3.0f }) };
         firstProgram.SetUniform("view", view);
 
-        const glm::mat4 projection{ glm::perspective
-            (glm::radians(45.0f), windowWidth / static_cast<float>(windowHeight),
-             0.1f, 100.0f) };
+        const Mat4x4f projection{ GetPerspective(ConvertToRadians(45.0f),
+                static_cast<float>(windowWidth) / windowHeight, 0.1f, 100.0f) };
         firstProgram.SetUniform("projection", projection);
 
-        const glm::mat4 scale{ glm::scale(glm::mat4{ 1.0f }, glm::vec3{ 1.0f }) };
-        firstProgram.SetUniform("scale", scale);
-
-
-        for (std::uint32_t i = 0; i < 10; ++i) 
-        {
-            glm::mat4 model
-            { 
-                glm::translate(glm::mat4{ 1.0f }, cubePositions[i]) 
-            };
-
-            const float angle = i * 20.0f;
-
-            model = glm::rotate(model, glm::radians(angle),
-                glm::vec3{ 1.0f, 1.0f, 0.5f });
-
-            firstProgram.SetUniform("model", model);
-
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -253,56 +204,4 @@ void ProcessInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
     }
 
-    const float cameraSpeed = 2.0f * deltaTime;
-
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    {
-        cameraPosition += cameraSpeed * cameraFront;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    {
-        cameraPosition -= cameraSpeed * cameraFront;
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    {
-        cameraPosition -= glm::normalize(glm::cross(cameraFront, cameraUp))
-            * cameraSpeed;
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    {
-        cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp))
-            * cameraSpeed;
-    }
 }
-
-void MouseCallBack(GLFWwindow* window, double xpos, double ypos)
-{
-    const float sensitivity = 0.1f;
-
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-  
-    const float xoffset = (xpos - lastX) * sensitivity;
-    const float yoffset = (lastY - ypos) * sensitivity; 
-
-    lastX = xpos;
-    lastY = ypos;
-
-    yaw += xoffset;
-    pitch += yoffset;
-
-    pitch = std::max(std::min(pitch, 89.0f), -89.0f);
-
-    const glm::vec3 direction
-    {
-        cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
-        sin(glm::radians(pitch)),
-        sin(glm::radians(yaw)) * cos(glm::radians(pitch))
-    };
-
-    cameraFront = glm::normalize(direction);
-}  
