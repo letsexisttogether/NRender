@@ -1,6 +1,6 @@
 #include "Boundable.hpp"
 
-#include "GLEW/glew.h"
+#include <GLEW/glew.h>
 
 Boundable::Boundable(const Type type)
     : m_Type{ type }
