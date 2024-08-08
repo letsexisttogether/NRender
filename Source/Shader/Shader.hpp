@@ -17,7 +17,7 @@ public:
     Shader(const Type type, const ShaderSource& source, 
         const bool shouldPrepare = true);
 
-    ~Shader() = default;
+    ~Shader();
 
     void Bind() noexcept override;
     void UnBind() noexcept override;

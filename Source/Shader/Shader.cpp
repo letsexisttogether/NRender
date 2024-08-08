@@ -15,6 +15,13 @@ Shader::Shader(const Type type, const ShaderSource& source,
     }
 }
 
+Shader::~Shader()
+{
+    UnBind();
+
+    glDeleteShader(m_ID);
+}
+
 void Shader::Bind() noexcept
 {
     glAttachShader(m_ProgramID, m_ID);
@@ -22,7 +29,7 @@ void Shader::Bind() noexcept
 
 void Shader::UnBind() noexcept
 {
-    glAttachShader(m_ProgramID, 0);
+    glDetachShader(m_ProgramID, m_ID);
 }
 
 void Shader::Compile() noexcept

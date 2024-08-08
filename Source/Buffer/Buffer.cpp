@@ -21,6 +21,8 @@ BufferTDef()::Buffer(Data&& data, const bool shouldPrepare)
 
 BufferTDef()::~Buffer()
 {
+    UnBind();
+
     glDeleteBuffers(1, &m_ID);
 }
 

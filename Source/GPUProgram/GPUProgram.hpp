@@ -2,10 +2,10 @@
 
 #include <memory>
 
-#include <GML/Matrix/MatrixDefenitions.hpp>
+#include <GML/Matrix/Definitions.hpp>
+#include <GML/Vector/Definitions.hpp>
 
 #include "Boundable/Boundable.hpp"
-#include "GML/Vector/VectorDefinitions.hpp"
 #include "Shader/Shader.hpp"
 
 class GPUProgram : public Boundable
@@ -22,7 +22,7 @@ public:
     GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
         const bool shouldPrepare = true);
 
-    ~GPUProgram() = default;
+    ~GPUProgram();
 
     void Bind() noexcept override;
     void UnBind() noexcept override;

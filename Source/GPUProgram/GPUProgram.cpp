@@ -20,6 +20,13 @@ GPUProgram::GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
     }
 }
 
+GPUProgram::~GPUProgram()
+{
+    UnBind();
+
+    glDeleteProgram(m_ID);
+}
+
 void GPUProgram::Bind() noexcept
 {
     glUseProgram(m_ID);
@@ -67,7 +74,7 @@ void GPUProgram::SetUniform(const UniformName name, const Mat4x4f& matrix)
 {
     const UniformLocation location = GetLocation(name);
 
-    glUniformMatrix4fv(location, 1, GL_FALSE, matrix.GetRawData());
+    glUniformMatrix4fv(location, 1, GL_FALSE, matrix.GetDataPointer());
 }
 
 void GPUProgram::Generate() noexcept

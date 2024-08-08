@@ -1,7 +1,5 @@
 #include "Texture.hpp"
 
-#include <iostream>
-
 #include "GLEW/glew.h"
 
 Texture::Texture(Data const data, const Resolution width,
@@ -23,6 +21,10 @@ Texture::Texture(Data const data, const Resolution width,
 Texture::~Texture()
 {
     delete m_Data;
+
+    UnBind();
+
+    glDeleteTextures(1, &m_ID);
 }
 
 void Texture::SetParameters() noexcept

@@ -6,11 +6,6 @@ Boundable::Boundable(const Type type)
     : m_Type{ type }
 {}
 
-Boundable::~Boundable() 
-{
-    UnBind();
-}
-
 void Boundable::Bind() noexcept
 {
     glBindBuffer(m_Type, m_ID);

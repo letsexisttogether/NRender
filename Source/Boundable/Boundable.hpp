@@ -15,7 +15,7 @@ public:
 
     Boundable(const Type type);
 
-    virtual ~Boundable();
+    virtual ~Boundable() = default;
 
     virtual void Bind() noexcept;
     virtual void UnBind() noexcept;
