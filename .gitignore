@@ -10,3 +10,4 @@ neovim.json
 # Dependencies
 Dependencies/**/*.h
 Dependencies/**/*.lib
+Dependencies/**/**/
