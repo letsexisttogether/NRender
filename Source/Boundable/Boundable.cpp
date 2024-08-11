@@ -27,8 +27,3 @@ Boundable& Boundable::operator = (Boundable&& boundable) noexcept
     return *this;
 };
 
-void Boundable::Generate() noexcept
-{
-    // TODO: cringe - boundable generates a buffer, move to Buffer
-    glGenBuffers(1, &m_ID);
-}
