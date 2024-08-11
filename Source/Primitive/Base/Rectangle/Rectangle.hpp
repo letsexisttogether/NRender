@@ -28,6 +28,9 @@ public:
     Size GetWidth() const noexcept;
     Size GetHeight() const noexcept;
 
+    Rectangle& operator = (const Rectangle&) noexcept = default;
+    Rectangle& operator = (Rectangle&&) noexcept = default;
+
 protected:
     Boundries CalculateBoundries() const noexcept;
 

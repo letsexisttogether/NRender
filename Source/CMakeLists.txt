@@ -11,6 +11,10 @@ add_subdirectory(Buffer)
 add_subdirectory(VertexArray)
 add_subdirectory(Texture)
 add_subdirectory(AttributePointer)
+add_subdirectory(Primitive)
+add_subdirectory(Camera)
+
+add_subdirectory(FpsCounter)
 
 add_subdirectory(FileReader)
 add_subdirectory(TextureSpawn)

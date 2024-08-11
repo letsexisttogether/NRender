@@ -1,4 +1,3 @@
-#include <cmath>
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
@@ -9,20 +8,19 @@
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 #include <STB/stb_image.h>
-#include <GML/Matrix/Matrix.hpp>
 #include <GML/Variations/Transformation.hpp>
 #include <GML/Variations/Projection.hpp>
 #include <GML/Utility/Operations.hpp>
 
-#include "Buffer/VertexBuffer.hpp"
-#include "Buffer/IndexBuffer.hpp"
 #include "FileReader/FileReader.hpp"
-#include "VertexArray/VertexArray.hpp"
 #include "GPUProgram/GPUProgram.hpp"
 #include "Shader/Shader.hpp"
 #include "Texture/Texture.hpp"
 #include "TextureSpawn/TextureSpawner.hpp"
-#include "AttributePointer/AttributePointer.hpp"
+#include "Primitive/Square/Square.hpp"
+#include "Camera/Camera.hpp"
+
+#include "FpsCounter/FpsCounter.hpp"
 
 void ProcessInput(GLFWwindow* window);
 
@@ -47,7 +45,10 @@ std::int32_t main(std::int32_t argc, char** argv)
         nullptr, nullptr);
 
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(0);
+
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+
 
     if (glewInit() != GLEW_OK)
     {
@@ -56,22 +57,65 @@ std::int32_t main(std::int32_t argc, char** argv)
         return EXIT_FAILURE;
     }
 
+    if (argc < 2)
+    {
+        std::cerr << "The texture name were not provided" << std::endl;
+
+        return EXIT_FAILURE;
+    }
+
+    const std::size_t objectCount = ((argc > 2) ? (std::atoi(argv[2])) : (1));
+
+    /*
+    VertexArray vao{};
+
+    Vertex2DBuffer::Data vertexData{};
+
+    for (std::size_t i = 0; i < objectCount; ++i)
+    {
+        vertexData.push_back({ -0.5f,  0.5f });
+        vertexData.push_back({ 0.0f, 1.0f });
+
+        vertexData.push_back({ 0.0f, 1.0f });
+        vertexData.push_back({ 0.0f, 1.0f });
+
+        vertexData.push_back({ -0.5f, -0.5f }); 
+        vertexData.push_back({ 0.0f, 0.0f  });
+
+        vertexData.push_back({  0.5f, -0.5f  }); 
+        vertexData.push_back({ 1.0f, 0.0f  });
+    }
+
+    const Vertex2DBuffer buffer
+    {
+        std::move(vertexData)
+    };
+
+    IndexBuffer::Data indexData{};
+    for (std::size_t i = 0; i < objectCount * 3; i += 3)
+    {
+        indexData.push_back(i);
+        indexData.push_back(i + 1);
+        indexData.push_back(i + 2);
+    }
+
+    const IndexBuffer indices
+    {
+        std::move(indexData)
+    };
+
+    AttributePointer firstPointer{ 0, 2, GL_FALSE, 4, 0 };
+    AttributePointer secondPointer{ 1, 2, GL_FALSE, 4, 2 };
+    */
+
     const TextureSpawner::TexturePath texturesPath
     {
         "D:/Projects/OPPL/Textures/"
     };
 
     TextureSpawner spawner{ TexFillParams{}, GL_TEXTURE0 };
-
-    if (argc < 3)
-    {
-        std::cerr << "The textures' names were not provided" << std::endl;
-
-        return EXIT_FAILURE;
-    }
-    
+ 
     Texture firstTexture{ spawner.LoadTexture(texturesPath + argv[1]) };
-    Texture secondTexture{ spawner.LoadTexture(texturesPath + argv[2]) };
 
     std::cout << "Hello, CloseGH again" << std::endl;
 
@@ -81,58 +125,6 @@ std::int32_t main(std::int32_t argc, char** argv)
     {
         "D:/Projects/OPPL/Shaders/"
     };
-
-    VertexArray firstTriangle{};
-
-    VertexBuffer firstVertecies 
-    { 
-        {
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-             0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-        }
-    };
-
-    AttributePointer firstAttribPointer{ 0, 3, GL_FALSE, 5, 0 };
-    AttributePointer secondAttribPointer{ 1, 2, GL_FALSE, 5, 3 };
 
     Shader firstVertexShader
     {
@@ -150,43 +142,41 @@ std::int32_t main(std::int32_t argc, char** argv)
         std::move(firstVertexShader),
         std::move(firstFragmenShader)
     };
+    firstProgram.Bind();
 
-    const float secondStrength = ((argc > 3) ? (std::atof(argv[3])) : (0.5));
+    firstProgram.SetUniform("texture1", firstTexture.GetSlot());
 
+    const float halfWindowWidth = windowWidth / 2.0f;
+    const float halfWindowHeight = windowHeight / 2.0f;
 
-    // glEnable(GL_DEPTH_TEST);
+    Camera camera{ { 0.0f, 0.0f }, halfWindowWidth, halfWindowHeight, firstProgram };
+
+    FpsCounter counter{};
+
+    std::vector<Square> squares{};
+
+    for (std::size_t i = 0; i < objectCount; ++i)
+    {
+        squares.push_back(std::move(Square
+            { { 0.0f + 200.0f * i, 0.0f }, 200.0f }));
+    }
+
+    // Square square{ { 0.0f, 0.0f }, 200.0f };
 
     while (!glfwWindowShouldClose(window))
     {
-        const float time = glfwGetTime();
-
         ProcessInput(window);
-        // glClearColor(1.0f, 0.2f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        firstProgram.Bind();
+        const FpsCounter::FPS fps = counter.GetFPS();
+        glfwSetWindowTitle(window, std::to_string(fps).c_str());
 
-        firstProgram.SetUniform("texture1", firstTexture.GetSlot());
-        firstProgram.SetUniform("texture2", secondTexture.GetSlot());
-        firstProgram.SetUniform("secondStrength", secondStrength);
+        for (std::size_t i = 0; i < squares.size(); ++i)
+        {
+            squares[i].Draw();
+        }
 
-        firstTexture.Bind();
-        secondTexture.Bind();
-
-        firstTriangle.Bind();
-
-        const Mat4x4f model{ GetRotation(time * ConvertToRadians(50.0f),
-            Vec3f{ 0.5f, 1.0f, 0.0f }) };
-        firstProgram.SetUniform("model", model);
-
-        const Mat4x4f view{ GetTranslation(Vec3f{ 0.0f, 0.0f, -3.0f }) };
-        firstProgram.SetUniform("view", view);
-
-        const Mat4x4f projection{ GetPerspective(ConvertToRadians(45.0f),
-                static_cast<float>(windowWidth) / windowHeight, 0.1f, 100.0f) };
-        firstProgram.SetUniform("projection", projection);
-
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        camera.Draw();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -197,11 +187,13 @@ std::int32_t main(std::int32_t argc, char** argv)
     return EXIT_SUCCESS;
 }
 
+
+// nastya 
+
 void ProcessInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);
     }
-
 }
