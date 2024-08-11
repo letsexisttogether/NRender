@@ -10,8 +10,8 @@ public:
 
 public:
     Boundable() = default;
-    Boundable(const Boundable&) = default;
-    Boundable(Boundable&&) = default;
+    Boundable(const Boundable&) = delete;
+    Boundable(Boundable&& boundable);
 
     Boundable(const Type type);
 
@@ -22,8 +22,8 @@ public:
 
     BoundableID GetID() const noexcept;
 
-    Boundable& operator = (const Boundable&) noexcept = default;
-    Boundable& operator = (Boundable&&) noexcept = default;
+    Boundable& operator = (const Boundable&) noexcept = delete;
+    Boundable& operator = (Boundable&& boundable) noexcept; 
 
 protected:
     virtual void Generate() noexcept;
