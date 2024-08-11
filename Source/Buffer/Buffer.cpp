@@ -1,6 +1,8 @@
 #include "Buffer.hpp"
 
 #include <GLEW/glew.h>
+#include <GML/Vector/Definitions.hpp>
+#include <iostream>
 
 #define Template template <class _DataType, Boundable::Type _BufferType>
 #define BufferT Buffer<_DataType, _BufferType>
@@ -21,9 +23,17 @@ BufferTDef()::Buffer(Data&& data, const bool shouldPrepare)
 
 BufferTDef()::~Buffer()
 {
-    UnBind();
-
     glDeleteBuffers(1, &m_ID);
+}
+
+BufferTDef(void)::Bind() noexcept
+{
+    glBindBuffer(m_Type, m_ID);
+}
+
+BufferTDef(void)::UnBind() noexcept
+{
+    glBindBuffer(m_Type, 0);
 }
 
 BufferTDef(void)::Buffer::FillData() noexcept
@@ -38,5 +48,10 @@ BufferTDef(typename BufferT::DataCount)::GetCount()
     return m_Data.size();
 }
 
+BufferTDef(void)::Generate() noexcept 
+{
+    glGenBuffers(1, &m_ID);
+}
+
+template class Buffer<Vec2f, GL_ARRAY_BUFFER>;
 template class Buffer<std::uint32_t, GL_ELEMENT_ARRAY_BUFFER>;
-template class Buffer<float, GL_ARRAY_BUFFER>;

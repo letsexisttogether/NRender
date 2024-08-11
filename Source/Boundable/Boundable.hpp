@@ -17,8 +17,8 @@ public:
 
     virtual ~Boundable() = default;
 
-    virtual void Bind() noexcept;
-    virtual void UnBind() noexcept;
+    virtual void Bind() noexcept = 0;
+    virtual void UnBind() noexcept = 0;
 
     BoundableID GetID() const noexcept;
 
@@ -26,7 +26,7 @@ public:
     Boundable& operator = (Boundable&& boundable) noexcept; 
 
 protected:
-    virtual void Generate() noexcept;
+    virtual void Generate() noexcept = 0;
 
 protected:
     BoundableID m_ID{}; 

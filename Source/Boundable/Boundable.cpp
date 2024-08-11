@@ -12,16 +12,6 @@ Boundable::Boundable(Boundable&& boundable)
     boundable.m_ID = BoundableID{}; 
 }
 
-void Boundable::Bind() noexcept
-{
-    glBindBuffer(m_Type, m_ID);
-}
-
-void Boundable::UnBind() noexcept
-{
-    glBindBuffer(m_Type, 0);
-}
-
 Boundable::BoundableID Boundable::GetID() const noexcept
 {
     return m_ID;
