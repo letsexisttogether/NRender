@@ -5,7 +5,7 @@
 class VertexArray : public Boundable 
 {
 public:
-    VertexArray(const VertexArray&) = default;
+    VertexArray(const VertexArray&) = delete;
     VertexArray(VertexArray&&) = default;
 
     VertexArray(const bool shouldPrepare = true);
@@ -15,7 +15,7 @@ public:
     void Bind() noexcept override;
     void UnBind() noexcept override;
 
-    VertexArray& operator = (const VertexArray&) noexcept = default;
+    VertexArray& operator = (const VertexArray&) noexcept = delete;
     VertexArray& operator = (VertexArray&&) noexcept = default;
 
 protected:

@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 
-#include "Buffer/VertexBuffer.hpp"
+#include "Boundable/Boundable.hpp"
 
 class AttributePointer : public Boundable
 {
@@ -14,19 +15,19 @@ public:
 
 public:
     AttributePointer() = default;
-    AttributePointer(const AttributePointer&) = default;
+    AttributePointer(const AttributePointer&) = delete;
     AttributePointer(AttributePointer&&) = default;
 
     AttributePointer(const BoundableID id, const Count count,
         const IsNormalized isNormalizzed, const Stride stride,
         const Offset offset, const bool shouldPrepare = true);
 
-    ~AttributePointer();
+    ~AttributePointer() = default;
 
     void Bind() noexcept override;
     void UnBind() noexcept override;
 
-    AttributePointer& operator = (const AttributePointer&) noexcept = default;
+    AttributePointer& operator = (const AttributePointer&) noexcept = delete;
     AttributePointer& operator = (AttributePointer&&) noexcept = default;
 
 protected:

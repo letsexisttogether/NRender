@@ -14,8 +14,6 @@ VertexArray::VertexArray(const bool shouldPrepare)
 
 VertexArray::~VertexArray()
 {
-    UnBind();
-
     glDeleteVertexArrays(1, &m_ID);
 }
 

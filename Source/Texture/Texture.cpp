@@ -22,7 +22,7 @@ Texture::~Texture()
 {
     delete m_Data;
 
-    UnBind();
+    // UnBind();
 
     glDeleteTextures(1, &m_ID);
 }
