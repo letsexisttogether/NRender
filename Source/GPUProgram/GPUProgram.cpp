@@ -22,14 +22,17 @@ GPUProgram::GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
 
 GPUProgram::~GPUProgram()
 {
-    UnBind();
-
     glDeleteProgram(m_ID);
 }
 
 void GPUProgram::Bind() noexcept
 {
-    glUseProgram(m_ID);
+    if (m_ID != m_CurrentBoundID)
+    {
+        glUseProgram(m_ID);
+
+        m_CurrentBoundID = m_ID;
+    }
 }
 
 void GPUProgram::UnBind() noexcept

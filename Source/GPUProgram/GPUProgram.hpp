@@ -17,7 +17,7 @@ public:
 public:
     GPUProgram() = delete;
     GPUProgram(const GPUProgram&) = delete;
-    GPUProgram(GPUProgram&&) = default;
+    GPUProgram(GPUProgram&&) = delete;
 
     GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
         const bool shouldPrepare = true);
@@ -40,6 +40,9 @@ public:
         = delete;
     GPUProgram& operator = (GPUProgram&&) noexcept
         = delete;
+
+private:
+    static inline BoundableID m_CurrentBoundID{};
 
 protected:
     void Generate() noexcept override;

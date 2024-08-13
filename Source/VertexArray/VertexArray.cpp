@@ -19,7 +19,12 @@ VertexArray::~VertexArray()
 
 void VertexArray::Bind() noexcept
 {
-    glBindVertexArray(m_ID);
+    if (m_CurrentBoundID != m_ID)
+    {
+        glBindVertexArray(m_ID);
+
+        m_CurrentBoundID = m_ID;
+    }
 }
 
 void VertexArray::UnBind() noexcept
