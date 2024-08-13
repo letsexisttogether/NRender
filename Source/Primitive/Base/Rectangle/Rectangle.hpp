@@ -8,7 +8,7 @@ class Rectangle
 {
 public:
     using Size = float;
-    using Position = Vec2f;
+    using Position = GML::Vec2f;
 
     using Boundries = Vertex2DBuffer::Data;
 
@@ -34,8 +34,8 @@ public:
 protected:
     Boundries CalculateBoundries() const noexcept;
 
-    Vec2f GetLeftBottom() const noexcept;
-    Vec2f GetRightTop() const noexcept;
+    GML::Vec2f GetLeftBottom() const noexcept;
+    GML::Vec2f GetRightTop() const noexcept;
 
 protected:
     Position m_Origin{};

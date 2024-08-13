@@ -64,7 +64,7 @@ void GPUProgram::SetUniform(const UniformName name, const std::int32_t value)
     glUniform1i(location, value);
 }
 
-void GPUProgram::SetUniform(const UniformName name, const Vec3f& vector)
+void GPUProgram::SetUniform(const UniformName name, const GML::Vec3f& vector)
     noexcept
 {
     const UniformLocation location = GetLocation(name);
@@ -72,7 +72,7 @@ void GPUProgram::SetUniform(const UniformName name, const Vec3f& vector)
     glUniform3f(location, vector.X(), vector.Y(), vector.Z());
 }
 
-void GPUProgram::SetUniform(const UniformName name, const Mat4x4f& matrix)
+void GPUProgram::SetUniform(const UniformName name, const GML::Mat4x4f& matrix)
     noexcept
 {
     const UniformLocation location = GetLocation(name);

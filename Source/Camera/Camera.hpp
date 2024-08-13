@@ -22,10 +22,9 @@ public:
     ~Camera() = default;
 
     // Later move the interface to a dedicated class Transformable 
-    void Move(const Vec2f moveBy) noexcept; 
+    void Move(const Position moveBy) noexcept; 
 
     void Draw() noexcept override;
-
 
 private:
     GPUProgram& m_Program;

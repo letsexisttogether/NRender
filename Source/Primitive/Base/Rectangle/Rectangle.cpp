@@ -31,8 +31,8 @@ Rectangle::Size Rectangle::GetHeight() const noexcept
 
 Rectangle::Boundries Rectangle::CalculateBoundries() const noexcept
 {
-    const Vec2f leftBottom{ GetLeftBottom() };
-    const Vec2f rightTop{ GetRightTop() };
+    const GML::Vec2f leftBottom{ GetLeftBottom() };
+    const GML::Vec2f rightTop{ GetRightTop() };
 
     Boundries boundries 
     {
@@ -46,12 +46,12 @@ Rectangle::Boundries Rectangle::CalculateBoundries() const noexcept
 }
 
 
-Vec2f Rectangle::GetLeftBottom() const noexcept
+GML::Vec2f Rectangle::GetLeftBottom() const noexcept
 {
     const Size halfWidth = m_Width / 2.0f;
     const Size halfHeight = m_Height / 2.0f;
 
-    const Vec2f leftBottom
+    const GML::Vec2f leftBottom
     { 
         m_Origin.X() - halfWidth, 
         m_Origin.Y() - halfHeight 
@@ -60,12 +60,12 @@ Vec2f Rectangle::GetLeftBottom() const noexcept
     return leftBottom;
 }
 
-Vec2f Rectangle::GetRightTop() const noexcept
+GML::Vec2f Rectangle::GetRightTop() const noexcept
 {
     const Size halfWidth = m_Width / 2.0f;
     const Size halfHeight = m_Height / 2.0f;
 
-    const Vec2f rightTop
+    const GML::Vec2f rightTop
     { 
         m_Origin.X() + halfWidth, 
         m_Origin.Y() + halfHeight 

@@ -32,9 +32,9 @@ public:
     void SetUniform(const UniformName name, const float value) noexcept;
     void SetUniform(const UniformName name, const std::int32_t value) noexcept;
 
-    void SetUniform(const UniformName name, const Vec3f& vector) noexcept;
+    void SetUniform(const UniformName name, const GML::Vec3f& vector) noexcept;
 
-    void SetUniform(const UniformName name, const Mat4x4f& matrix) noexcept;
+    void SetUniform(const UniformName name, const GML::Mat4x4f& matrix) noexcept;
 
     GPUProgram& operator = (const GPUProgram&) noexcept
         = delete;

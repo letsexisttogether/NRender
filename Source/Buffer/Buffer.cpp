@@ -53,5 +53,5 @@ BufferTDef(void)::Generate() noexcept
     glGenBuffers(1, &m_ID);
 }
 
-template class Buffer<Vec2f, GL_ARRAY_BUFFER>;
+template class Buffer<GML::Vec2f, GL_ARRAY_BUFFER>;
 template class Buffer<std::uint32_t, GL_ELEMENT_ARRAY_BUFFER>;
