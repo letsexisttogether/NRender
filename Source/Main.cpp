@@ -66,48 +66,6 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const std::size_t objectCount = ((argc > 2) ? (std::atoi(argv[2])) : (1));
 
-    /*
-    VertexArray vao{};
-
-    Vertex2DBuffer::Data vertexData{};
-
-    for (std::size_t i = 0; i < objectCount; ++i)
-    {
-        vertexData.push_back({ -0.5f,  0.5f });
-        vertexData.push_back({ 0.0f, 1.0f });
-
-        vertexData.push_back({ 0.0f, 1.0f });
-        vertexData.push_back({ 0.0f, 1.0f });
-
-        vertexData.push_back({ -0.5f, -0.5f }); 
-        vertexData.push_back({ 0.0f, 0.0f  });
-
-        vertexData.push_back({  0.5f, -0.5f  }); 
-        vertexData.push_back({ 1.0f, 0.0f  });
-    }
-
-    const Vertex2DBuffer buffer
-    {
-        std::move(vertexData)
-    };
-
-    IndexBuffer::Data indexData{};
-    for (std::size_t i = 0; i < objectCount * 3; i += 3)
-    {
-        indexData.push_back(i);
-        indexData.push_back(i + 1);
-        indexData.push_back(i + 2);
-    }
-
-    const IndexBuffer indices
-    {
-        std::move(indexData)
-    };
-
-    AttributePointer firstPointer{ 0, 2, GL_FALSE, 4, 0 };
-    AttributePointer secondPointer{ 1, 2, GL_FALSE, 4, 2 };
-    */
-
     const TextureSpawner::TexturePath texturesPath
     {
         "D:/Projects/OPPL/Textures/"
@@ -142,14 +100,14 @@ std::int32_t main(std::int32_t argc, char** argv)
         std::move(firstVertexShader),
         std::move(firstFragmenShader)
     };
-    firstProgram.Bind();
 
     firstProgram.SetUniform("texture1", firstTexture.GetSlot());
 
     const float halfWindowWidth = windowWidth / 2.0f;
     const float halfWindowHeight = windowHeight / 2.0f;
 
-    Camera camera{ { 0.0f, 0.0f }, halfWindowWidth, halfWindowHeight, firstProgram };
+    Camera camera{ { 0.0f, 0.0f }, halfWindowWidth, halfWindowHeight,
+        firstProgram };
 
     FpsCounter counter{};
 
@@ -158,7 +116,7 @@ std::int32_t main(std::int32_t argc, char** argv)
     for (std::size_t i = 0; i < objectCount; ++i)
     {
         squares.push_back(std::move(Square
-            { { 0.0f + 200.0f * i, 0.0f }, 200.0f }));
+            { { i + 200.0f * i, 0.0f }, 200.0f }));
     }
 
     // Square square{ { 0.0f, 0.0f }, 200.0f };

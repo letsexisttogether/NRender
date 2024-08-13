@@ -11,7 +11,7 @@ public:
 
 public:
     Shader() = delete;
-    Shader(const Shader&) = default;
+    Shader(const Shader&) = delete;
     Shader(Shader&&) = default;
 
     Shader(const Type type, const ShaderSource& source, 
@@ -29,6 +29,9 @@ public:
     
     BoundableID GetProgramID() const noexcept;
     void SetProgramID(const BoundableID programID) noexcept;
+
+    Shader& operator = (const Shader&) noexcept = delete;
+    Shader& operator = (Shader&&) noexcept = delete;
 
 protected:
     void Generate() noexcept override;

@@ -18,5 +18,5 @@ public:
     Square& operator = (Square&&) noexcept = default;
 
 protected:
-    void Generate() noexcept;
+    void Generate() noexcept override;
 };
