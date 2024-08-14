@@ -2,8 +2,7 @@
 
 #include <string>
 
-#include "Texture/TexFillParams.hpp"
-#include "Texture/Texture.hpp"
+#include "Basic/Texture/Texture.hpp"
 
 class TextureSpawner
 {

@@ -1,8 +1,6 @@
 #include "Camera.hpp"
-#include "GML/Matrix/Definitions.hpp"
-#include "GML/Variations/Transformation.hpp"
-#include "Primitive/Base/Rectangle/Rectangle.hpp"
 
+#include <GML/Variations/Transformation.hpp>
 #include <GML/Variations/Projection.hpp>
 
 Camera::Camera(const Position origin, const Size width, const Size height,

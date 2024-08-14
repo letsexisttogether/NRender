@@ -2,10 +2,9 @@
 
 #include <GML/Vector/Definitions.hpp>
 
-#include "Boundable/Boundable.hpp"
-#include "Drawable/Drawable.hpp"
-#include "GPUProgram/GPUProgram.hpp"
-#include "Primitive/Base/Rectangle/Rectangle.hpp"
+#include "Basic/GPUProgram/GPUProgram.hpp"
+#include "Front/Drawable/Drawable.hpp"
+#include "Front/Primitive/Base/Rectangle/Rectangle.hpp"
 
 class Camera : Rectangle, public Drawable
 {
