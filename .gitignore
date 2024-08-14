@@ -11,3 +11,6 @@ neovim.json
 Dependencies/**/*.h
 Dependencies/**/*.lib
 Dependencies/**/**/
+
+# Local 
+Tasks/

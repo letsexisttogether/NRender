@@ -1,8 +1,7 @@
 #pragma once
 
+#include <vector>
 #include <GML/Vector/Definitions.hpp>
-
-#include "Buffer/VertexBuffer.hpp"
 
 class Rectangle
 {
@@ -10,7 +9,7 @@ public:
     using Size = float;
     using Position = GML::Vec2f;
 
-    using Boundries = Vertex2DBuffer::Data;
+    using Boundries = std::vector<GML::Vec2f>;
 
 public:
     Rectangle() = default;
@@ -27,6 +26,8 @@ public:
 
     Size GetWidth() const noexcept;
     Size GetHeight() const noexcept;
+
+    bool CheckPointColision(const GML::Vec2f point) const noexcept;
 
     Rectangle& operator = (const Rectangle&) noexcept = default;
     Rectangle& operator = (Rectangle&&) noexcept = default;

@@ -29,6 +29,12 @@ Rectangle::Size Rectangle::GetHeight() const noexcept
     return m_Height;
 }
 
+
+bool Rectangle::CheckPointColision(const GML::Vec2f point) const noexcept
+{
+
+}
+
 Rectangle::Boundries Rectangle::CalculateBoundries() const noexcept
 {
     const GML::Vec2f leftBottom{ GetLeftBottom() };
@@ -44,7 +50,6 @@ Rectangle::Boundries Rectangle::CalculateBoundries() const noexcept
 
     return boundries;
 }
-
 
 GML::Vec2f Rectangle::GetLeftBottom() const noexcept
 {
