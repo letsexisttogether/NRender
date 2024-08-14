@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "Boundable/Boundable.hpp"
+#include "Basic/Boundable/Boundable.hpp"
 
 class AttributePointer : public Boundable
 {

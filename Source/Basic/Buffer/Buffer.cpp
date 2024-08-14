@@ -1,6 +1,5 @@
 #include "Buffer.hpp"
 
-#include <iostream>
 #include <GLEW/glew.h>
 #include <GML/Vector/Definitions.hpp>
 
@@ -47,10 +46,6 @@ BufferTDef(void)::UpdateData(OldStorage data, const Count count,
 {
     if (count + offset > m_MaxCount)
     {
-        // Just to debug better 
-        std::cout << "Log. The count + offset" \
-            "exceed the max count of vertices";
-        
         return;
     }
 

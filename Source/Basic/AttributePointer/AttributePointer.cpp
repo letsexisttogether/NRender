@@ -1,8 +1,8 @@
 #include "AttributePointer.hpp"
 
-#include "Buffer/VertexBuffer.hpp"
-
 #include <GLEW/glew.h>
+
+#include "Basic/Buffer/VertexBuffer.hpp"
 
 AttributePointer::AttributePointer(const BoundableID id, const Count count,
     const IsNormalized isNormalizzed, const Stride stride, const Offset offset,

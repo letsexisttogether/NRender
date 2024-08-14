@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Boundable/Boundable.hpp"
+#include "Basic/Boundable/Boundable.hpp"
 
 template <class _Vertex, const Boundable::Type _Type>
 class Buffer : public Boundable

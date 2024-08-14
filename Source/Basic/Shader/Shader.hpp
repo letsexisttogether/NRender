@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Boundable/Boundable.hpp"
+#include "Basic/Boundable/Boundable.hpp"
 
 class Shader : public Boundable
 {

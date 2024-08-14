@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Boundable/Boundable.hpp"
-#include "Texture/TexFillParams.hpp"
+#include "Basic/Boundable/Boundable.hpp"
+#include "TexFillParams.hpp"
 
 class Texture : public Boundable
 {

@@ -26,4 +26,3 @@ Boundable& Boundable::operator = (Boundable&& boundable) noexcept
 
     return *this;
 };
-

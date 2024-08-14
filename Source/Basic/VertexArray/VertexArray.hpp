@@ -1,8 +1,6 @@
 #pragma once
 
-#include <vector>
-
-#include "Boundable/Boundable.hpp"
+#include "Basic/Boundable/Boundable.hpp"
 
 class VertexArray : public Boundable 
 {

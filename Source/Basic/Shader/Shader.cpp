@@ -1,6 +1,5 @@
 #include "Shader.hpp"
 
-#include "Boundable/Boundable.hpp"
 #include "GLEW/glew.h"
 
 Shader::Shader(const Type type, const ShaderSource& source,
