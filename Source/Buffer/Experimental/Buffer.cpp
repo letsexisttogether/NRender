@@ -6,14 +6,14 @@
 
 namespace Exeperimental {
 
-#define Template template <class _Vertex>
-#define BufferT Buffer<_Vertex>
+#define Template template <class _Vertex, Boundable::Type _Type>
+#define BufferT Buffer<_Vertex, _Type>
 #define BufferTDef(returnType) Template \
     returnType BufferT
 
-BufferTDef()::Buffer(const Type type, const Count maxCount, const Usage usage,
+BufferTDef()::Buffer(const Count maxCount, const Usage usage,
     const bool shouldPrepare)
-    : Boundable{ type }, m_MaxCount{ maxCount }, m_Usage{ usage }
+    : Boundable{ _Type }, m_MaxCount{ maxCount }, m_Usage{ usage }
 {
     Generate();
 
@@ -68,7 +68,7 @@ BufferTDef(void)::UpdateData(const ModernStorage& data, const Count offset)
 
 BufferTDef(void)::ClearData(const Count count, const Count offset) noexcept
 {
-    
+    // TODO: probably implement this methods
 }
 
 BufferTDef(typename BufferT::Count)::GetMaxCount() const noexcept
@@ -82,7 +82,7 @@ BufferTDef(void)::Generate() noexcept
 }
 
 
-template class Buffer<GML::Vec2f>;
-template class Buffer<std::uint32_t>;
+template class Buffer<GML::Vec2f, GL_ARRAY_BUFFER>;
+template class Buffer<std::uint32_t, GL_ELEMENT_ARRAY_BUFFER>;
 
 }

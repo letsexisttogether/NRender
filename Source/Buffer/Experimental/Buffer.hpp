@@ -7,7 +7,7 @@
 namespace Exeperimental
 {
 
-template <class _Vertex>
+template <class _Vertex, const Boundable::Type _Type>
 class Buffer : public Boundable
 {
 public:
@@ -22,7 +22,7 @@ public:
     Buffer(const Buffer&) = delete;
     Buffer(Buffer&&) = default;
 
-    Buffer(const Type type, const Count maxCount, const Usage usage,
+    Buffer(const Count maxCount, const Usage usage,
         const bool shouldPrepare = true);
 
     ~Buffer();
@@ -37,7 +37,7 @@ public:
     void UpdateData(const ModernStorage& data, const Count offset)
         noexcept;
 
-    void CleanData(const Count count, const Count offset) noexcept;
+    void ClearData(const Count count, const Count offset) noexcept;
 
     Count GetMaxCount() const noexcept;
 
