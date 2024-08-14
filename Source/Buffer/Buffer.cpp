@@ -1,23 +1,24 @@
 #include "Buffer.hpp"
 
+#include <iostream>
 #include <GLEW/glew.h>
 #include <GML/Vector/Definitions.hpp>
-#include <iostream>
 
-#define Template template <class _DataType, Boundable::Type _BufferType>
-#define BufferT Buffer<_DataType, _BufferType>
+#define Template template <class _Vertex, Boundable::Type _Type>
+#define BufferT Buffer<_Vertex, _Type>
 #define BufferTDef(returnType) Template \
     returnType BufferT
 
-BufferTDef()::Buffer(Data&& data, const bool shouldPrepare)
-    : Boundable{ _BufferType }, m_Data{ std::move(data) }
+BufferTDef()::Buffer(const Count maxCount, const Usage usage,
+    const bool shouldPrepare)
+    : Boundable{ _Type }, m_MaxCount{ maxCount }, m_Usage{ usage }
 {
     Generate();
 
     if (shouldPrepare)
-    {   
+    {
         Bind();
-        FillData();
+        AllocateSpace();
     }
 }
 
@@ -26,7 +27,7 @@ BufferTDef()::~Buffer()
     glDeleteBuffers(1, &m_ID);
 }
 
-BufferTDef(void)::Bind() noexcept
+BufferTDef(void)::Bind() noexcept 
 {
     glBindBuffer(m_Type, m_ID);
 }
@@ -36,22 +37,48 @@ BufferTDef(void)::UnBind() noexcept
     glBindBuffer(m_Type, 0);
 }
 
-BufferTDef(void)::Buffer::FillData() noexcept
+BufferTDef(void)::AllocateSpace() noexcept
 {
-    glBufferData(m_Type, m_Data.size() * sizeof(_DataType),
-        m_Data.data(), GL_STATIC_DRAW);
+    glBufferData(m_Type, sizeof(_Vertex) * m_MaxCount, nullptr, m_Usage);
 }
 
-BufferTDef(typename BufferT::DataCount)::GetCount()
-    const noexcept
+BufferTDef(void)::UpdateData(OldStorage data, const Count count, 
+    const Count offset) noexcept
 {
-    return m_Data.size();
+    if (count + offset > m_MaxCount)
+    {
+        // Just to debug better 
+        std::cout << "Log. The count + offset" \
+            "exceed the max count of vertices";
+        
+        return;
+    }
+
+    glBufferSubData(m_Type, offset * sizeof(_Vertex),
+        count * sizeof(_Vertex), data);
 }
 
-BufferTDef(void)::Generate() noexcept 
+BufferTDef(void)::UpdateData(const ModernStorage& data, const Count offset)
+    noexcept
 {
-    glGenBuffers(1, &m_ID);
+    UpdateData(data.data(), data.size(), offset);
 }
+
+BufferTDef(void)::ClearData(const Count count, const Count offset) noexcept
+{
+    // TODO: probably implement this methods
+}
+
+BufferTDef(typename BufferT::Count)::GetMaxCount() const noexcept
+{
+    return m_MaxCount;
+}
+
+BufferTDef(void)::Generate() noexcept
+{
+    glCreateBuffers(1, &m_ID);
+}
+
 
 template class Buffer<GML::Vec2f, GL_ARRAY_BUFFER>;
 template class Buffer<std::uint32_t, GL_ELEMENT_ARRAY_BUFFER>;

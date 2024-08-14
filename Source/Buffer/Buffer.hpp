@@ -1,43 +1,50 @@
 #pragma once
 
-#include <cstdint>
 #include <vector>
 
 #include "Boundable/Boundable.hpp"
 
-template <class _DataType, Boundable::Type _BufferType>
+template <class _Vertex, const Boundable::Type _Type>
 class Buffer : public Boundable
 {
 public:
-    using BufferID = std::uint32_t;
-    using Data = std::vector<_DataType>;
-    using DataCount = typename Data::size_type;
+    using Count = std::uint16_t;
+    using Usage = uint32_t;
+    
+    using ModernStorage = std::vector<_Vertex>;
+    using OldStorage = const _Vertex*;
 
 public:
-    Buffer() = default;
-    Buffer(const Buffer&) = default;
+    Buffer() = delete;
+    Buffer(const Buffer&) = delete;
     Buffer(Buffer&&) = default;
 
-    Buffer(Data&& data, const bool shouldPrepare = true);
+    Buffer(const Count maxCount, const Usage usage,
+        const bool shouldPrepare = true);
 
     ~Buffer();
 
     void Bind() noexcept override;
     void UnBind() noexcept override;
 
-    void FillData() noexcept;
+    void AllocateSpace() noexcept;
 
-    DataCount GetCount() const noexcept;
+    void UpdateData(OldStorage data, const Count count, 
+        const Count offset) noexcept;
+    void UpdateData(const ModernStorage& data, const Count offset)
+        noexcept;
 
-    // Just for one function implemention process 
-    Data& GetRawData() noexcept { return m_Data; }
+    void ClearData(const Count count, const Count offset) noexcept;
 
-    Buffer& operator = (const Buffer&) noexcept = default;
-    Buffer& operator = (Buffer&& buffer) noexcept = default;
+    Count GetMaxCount() const noexcept;
 
 protected:
     void Generate() noexcept override;
 
 private:
-    Data m_Data{};
+    
+private:
+    Count m_MaxCount{};
+    
+    Usage m_Usage{};
 };
