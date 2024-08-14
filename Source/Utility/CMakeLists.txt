@@ -1,0 +1,3 @@
+add_subdirectory(FileReader)
+add_subdirectory(FpsCounter)
+add_subdirectory(TextureSpawn)
