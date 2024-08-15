@@ -6,25 +6,31 @@
 #include "Front/Drawable/Drawable.hpp"
 #include "Front/Primitive/Base/Rectangle/Rectangle.hpp"
 
-class Camera : Rectangle, public Drawable
+class Camera : public Rectangle, public Drawable
 {
-
 public: 
     Camera() = delete;
     Camera(const Camera&) = default;
     Camera(Camera&&) = default;
 
     // TODO: remove program, create a global OpenGL context with GPUprogram
-    Camera(const Position origin, const Size width, const Size height,
-        GPUProgram& program);
+    Camera(const Rectangle& rectangle, GPUProgram& program);
 
     ~Camera() = default;
 
-    // Later move the interface to a dedicated class Transformable 
-    void Move(const Position moveBy) noexcept; 
-
     void Draw() noexcept override;
+
+    Camera& operator = (const Camera&) noexcept = delete;
+    Camera& operator = (Camera&&) noexcept = delete;
+
+private:
+    void CalculateProjection() noexcept;
 
 private:
     GPUProgram& m_Program;
+
+    GML::Mat4x4f m_Projection{};
+
+    // For the later enhancements
+    // GML::Mat4x4f m_View{};
 };

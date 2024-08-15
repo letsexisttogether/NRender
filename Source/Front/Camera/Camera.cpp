@@ -3,31 +3,20 @@
 #include <GML/Variations/Transformation.hpp>
 #include <GML/Variations/Projection.hpp>
 
-Camera::Camera(const Position origin, const Size width, const Size height,
-    GPUProgram& program)
-    : Rectangle{ origin, width, height }, m_Program{ program }
-{}
-
-void Camera::Move(const Position moveBy) noexcept
+Camera::Camera(const Rectangle& rectangle, GPUProgram& program)
+    : Rectangle{ rectangle }, m_Program{ program }
 {
-    const GML::Mat4x4f translate
-    { 
-        GML::GetTranslation(GML::Vec3f{ moveBy.X(), moveBy.Y(), 0.0f }) 
-    };
-
-    m_Program.SetUniform("translate", translate);
+    CalculateProjection();
 }
 
 void Camera::Draw() noexcept
 {
-    const GML::Vec2f leftBottom{ GetLeftBottom() };
-    const GML::Vec2f rightTop{ GetRightTop() };
+    m_Program.SetUniform("projection", m_Projection);
+}
 
-    const GML::Mat4x4f projection
-    { 
-        GML::GetOrthogonal(leftBottom.X(), rightTop.X(),
-            leftBottom.Y(), rightTop.Y(), 0.0f, 1.0f) 
-    }; 
 
-    m_Program.SetUniform("projection", projection);
+void Camera::CalculateProjection() noexcept
+{
+    m_Projection = GML::GetOrthogonal(m_LeftBottom.X(), m_RightTop.X(),
+        m_LeftBottom.Y(), m_RightTop.Y(), 0.0f, 1.0f);
 }
