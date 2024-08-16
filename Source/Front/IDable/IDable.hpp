@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 
 class IDable
@@ -23,6 +24,18 @@ public:
 
     IDable& operator = (const IDable&) = default;
     IDable& operator = (IDable&&) = default;
+
+public:
+    struct Hash
+    {
+        std::size_t operator () (const IDable& idable) const noexcept;
+    };
+
+    struct Equal 
+    {
+        bool operator () (const IDable& first, const IDable& second)
+            const noexcept;
+    };
 
 private:
     ID m_ID{};    
