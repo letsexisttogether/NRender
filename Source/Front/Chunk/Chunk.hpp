@@ -1,41 +1,32 @@
 #pragma once
 
-#include <set>
+#include <unordered_set>
 
-#include "Front/IDable/IDable.hpp"
+#include "Front/Drawable/Drawable.hpp"
+#include "Front/IDGenerator/IDGenerator.hpp"
 #include "Front/Primitive/Base/Rectangle/Rectangle.hpp"
 
-class Chunk : public IDable, public Rectangle 
+class Chunk : public Rectangle, public Drawable
 {
 public:
-    using Objects = std::multiset<IDable::ID>;
+    using Objects = std::unordered_set<IDGenerator::ID>;
 
 public:
     Chunk() = delete;
     Chunk(const Chunk&) = default;
     Chunk(Chunk&&) = default;
 
-    Chunk(const IDable idable, const Rectangle& rectangle);
+    Chunk(const Rectangle& rectangle);
 
     ~Chunk() = default;
 
-    void AddObject(const IDable::ID id) noexcept;
-    void RemoveObject(const IDable::ID id) noexcept;
+    void AddObject(const IDGenerator::ID id) noexcept;
+    void RemoveObject(const IDGenerator::ID id) noexcept;
+
+    void Draw() noexcept override;
     
     Chunk& operator = (const Chunk&) noexcept;
     Chunk& operator = (Chunk&&) noexcept;
-
-public:
-    struct Hash
-    {
-        std::size_t operator () (const Chunk& chunk) const noexcept;
-    };
-
-    struct Equal 
-    {
-         bool operator () (const Chunk& first, const Chunk& second)
-             const noexcept;
-    };
 
 private:
     Objects m_Objects{}; 

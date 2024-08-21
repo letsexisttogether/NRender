@@ -1,13 +1,15 @@
 #pragma  once
 
-#include <unordered_set>
+#include <optional>
+#include <unordered_map>
 
 #include "Front/Chunk/Chunk.hpp"
+#include "Front/IDGenerator/IDGenerator.hpp"
 
 class ChunkManager 
 {
 public:
-    using Chunks = std::unordered_set<Chunk, Chunk::Hash, Chunk::Equal>;
+    using Chunks = std::unordered_map<IDGenerator::ID, Chunk>;
 
 public:
     ChunkManager() = default;
@@ -18,8 +20,13 @@ public:
 
     void AddChunk(Chunk&& chunk) noexcept;
 
-    void DistributeObject(const IDable::ID id) noexcept;
+    void DistributeObject(const IDGenerator::ID id) noexcept;
+
+    const Chunks& GetChunks() const noexcept;
+    Chunks& GetChunks() noexcept;
 
 private:
     Chunks m_Chunks{};
+        
+    IDGenerator m_IDGenerator{};
 };

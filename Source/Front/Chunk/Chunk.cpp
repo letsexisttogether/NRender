@@ -1,27 +1,30 @@
 #include "Chunk.hpp"
 
-Chunk::Chunk(const IDable idable, const Rectangle& rectangle)
-    : IDable{ idable }, Rectangle{ rectangle }
+#include <iostream>
+
+#include "Application/Application.hpp"
+#include "Front/GameObject/GameObject.hpp"
+
+Chunk::Chunk(const Rectangle& rectangle)
+    : Rectangle{ rectangle }
 {}
 
-void Chunk::AddObject(const IDable::ID id) noexcept
+void Chunk::AddObject(const IDGenerator::ID id) noexcept
 {
     m_Objects.insert(id);    
 }
 
-void Chunk::RemoveObject(const IDable::ID id) noexcept
+void Chunk::RemoveObject(const IDGenerator::ID id) noexcept
 {
     m_Objects.erase(id);
 }
 
-std::size_t Chunk::Hash::operator () (const Chunk& chunk)
-    const noexcept
+void Chunk::Draw() noexcept
 {
-    return chunk.GetID();
-}
+    for (const IDGenerator::ID id : m_Objects)
+    {
+        GameObject* object = Application::GetApp().GetScene()->GetObject(id);
 
- bool Chunk::Equal::operator () (const Chunk& first, const Chunk& second)
-    const noexcept
-{
-    return first.IDable::operator == (second);
+        object->Draw();
+    }
 }
