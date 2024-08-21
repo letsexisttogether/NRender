@@ -5,16 +5,21 @@
 bool Collider::IsCollision(const Rectangle& first, const Rectangle& second)
     noexcept
 {
-    static_assert("Implement Collider::IsCollision(Rectangle, Rectangle)");
+    const Rectangle::Position firstLB{ first.GetLeftBottom() };
+    const Rectangle::Position firstRT{ first.GetRightTop() };
 
-    const Rectangle::Position firstLeftBottom{ first.GetLeftBottom() };
-    const Rectangle::Position firstRightTop{ first.GetRightTop() };
+    const Rectangle::Position secondLB{ second.GetLeftBottom() };
+    const Rectangle::Position secondRT{ second.GetRightTop() };
 
-    const Rectangle::Position secondLeftBottom{ second.GetLeftBottom() };
-    const Rectangle::Position secondRightTop{ second.GetRightTop() };
+    if (firstLB.X() > secondRT.X() || firstRT.X() < secondLB.X())
+    {
+        return false;
+    }
 
-    const bool isXCollision = true;   
-    const bool isYCollision = true;
-    
-    return isXCollision && isYCollision;
+    if (firstLB.Y() > secondRT.Y() || firstRT.Y() < secondLB.Y())
+    {
+        return false;
+    }
+
+    return true;
 }
