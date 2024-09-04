@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
@@ -11,19 +12,19 @@
 #include <GML/Variations/Transformation.hpp>
 #include <GML/Variations/Projection.hpp>
 #include <GML/Utility/Operations.hpp>
-
-#include "VertexArray/VertexArray.hpp"
-#include "AttributePointer/AttributePointer.hpp"
 #include "GML/Vector/Definitions.hpp"
-#include "FileReader/FileReader.hpp"
-#include "GPUProgram/GPUProgram.hpp"
-#include "Shader/Shader.hpp"
-#include "Texture/Texture.hpp"
-#include "TextureSpawn/TextureSpawner.hpp"
-#include "Buffer/Buffer.hpp"
-#include "Camera/Camera.hpp"
 
-#include "FpsCounter/FpsCounter.hpp"
+#include "Application/Application.hpp"
+#include "Basic/GPUProgram/GPUProgram.hpp"
+#include "Basic/AttributePointer/AttributePointer.hpp"
+#include "Basic/VertexArray/VertexArray.hpp"
+#include "Basic/Buffer/IndexBuffer.hpp"
+#include "Basic/Buffer/VertexBuffer.hpp"
+#include "Utility/FileReader/FileReader.hpp"
+#include "Utility/TextureSpawn/TextureSpawner.hpp"
+#include "Utility/FpsCounter/FpsCounter.hpp"
+
+GLFWwindow* Initialize() noexcept;
 
 void ProcessInput(GLFWwindow* window);
 
@@ -34,31 +35,12 @@ const Texture::Resolution windowHeight = 800;
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
-    if (!glfwInit())
+    Application::Init();
+
+    GLFWwindow* window = Application::GetApp().GetWindow(); 
+
+    if (!window)
     {
-        std::cerr << "Can't initialize GLFW" << std::endl;
-
-        return EXIT_FAILURE;
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "CloseGH",
-        nullptr, nullptr);
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(0);
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
-
-
-    if (glewInit() != GLEW_OK)
-    {
-        std::cerr << "Failed to initialize GLEW" << std::endl;
-
         return EXIT_FAILURE;
     }
 
@@ -69,7 +51,8 @@ std::int32_t main(std::int32_t argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    const std::size_t objectCount = ((argc > 2) ? (std::atoi(argv[2])) : (1));
+    const Vertex2DBuffer::Count objectsCount = 
+        ((argc > 2) ? (std::atoi(argv[2])) : (1));
 
     TextureSpawner spawner{ TexFillParams{}, GL_TEXTURE0 };
 
@@ -106,83 +89,63 @@ std::int32_t main(std::int32_t argc, char** argv)
     const float halfWindowWidth = windowWidth / 2.0f;
     const float halfWindowHeight = windowHeight / 2.0f;
 
-    /*
-    Camera camera{ { 0.0f, 0.0f }, halfWindowWidth, halfWindowHeight,
-        firstProgram };
-    */
-
     FpsCounter counter{};
-
-    VertexArray vao{};
-
-    using Triangle = Exeperimental::Buffer<GML::Vec2f, GL_ARRAY_BUFFER>;
-
-    Triangle buffer 
-    { 
-        100, GL_DYNAMIC_DRAW 
-    };
-
-    AttributePointer firstPointer{ 0, 2, GL_FALSE, 4, 0 };
-    AttributePointer secondPointer{ 1, 2, GL_FALSE, 4, 2 };
-
-    const Triangle::ModernStorage triangle
-    {
-        { -0.5f, -0.5f }, { 0.0f, 0.0f },
-        {  0.5f, -0.5f }, { 1.0f, 0.0f },
-        {  0.0f,  0.5f }, { 0.5f, 0.5f }
-    };
-    buffer.UpdateData(triangle, 0);
-
-    const Triangle::ModernStorage anotherTriangle 
-    {
-        { -0.9f, -0.9f }, { 0.0f, 0.0f },
-        {  -0.3f, -0.9f }, { 1.0f, 0.0f }, 
-        {  -0.6,  -0.6f }, { 0.5f, 0.5f }
-    };
-    buffer.UpdateData(anotherTriangle, 3 * 2);
-
-    const Triangle::ModernStorage emptyTriangle
-    (
-        3 * 2, 
-        { 0.0f, 0.0f }
-    );
-
-    bool isSeen = true;
-
-    float timer = glfwGetTime();
 
     while (!glfwWindowShouldClose(window))
     {
-        ProcessInput(window);
-        glClear(GL_COLOR_BUFFER_BIT);
-
         const float time = glfwGetTime();
 
-        if (time - timer > 3.0f)
-        {
-            timer = time;
-
-            isSeen = !isSeen;
-            buffer.UpdateData(((isSeen) ? (anotherTriangle) : (emptyTriangle)),
-                3 * 2);
-        }
+        ProcessInput(window);
 
         const FpsCounter::FPS fps = counter.GetFPS();
         glfwSetWindowTitle(window, std::to_string(fps).c_str());
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         glfwSwapBuffers(window);
 
         glfwPollEvents();
     }
 
-    glfwTerminate();
+    Application::CleanUp();
     
     return EXIT_SUCCESS;
 }
 
 // nastya 
+
+
+GLFWwindow* Initialize() noexcept
+{
+    if (!glfwInit())
+    {
+        std::cerr << "Can't initialize GLFW" << std::endl;
+
+        return nullptr;
+    }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "CloseGH",
+        nullptr, nullptr);
+
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(0);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
+
+    if (glewInit() != GLEW_OK)
+    {
+        std::cerr << "Failed to initialize GLEW" << std::endl;
+
+        return nullptr;
+    }
+
+    return window;
+}
 
 void ProcessInput(GLFWwindow* window)
 {
@@ -200,4 +163,3 @@ void CheckOpenGLError(const char* functionName)
             << ": " << err << std::endl;
     }
 }
-

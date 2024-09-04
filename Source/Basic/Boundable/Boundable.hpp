@@ -22,6 +22,8 @@ public:
 
     BoundableID GetID() const noexcept;
 
+    Type GetType() const noexcept;
+
     Boundable& operator = (const Boundable&) noexcept = delete;
     Boundable& operator = (Boundable&& boundable) noexcept; 
 

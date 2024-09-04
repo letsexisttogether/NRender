@@ -17,6 +17,11 @@ Boundable::BoundableID Boundable::GetID() const noexcept
     return m_ID;
 }
 
+Boundable::Type Boundable::GetType() const noexcept
+{
+    return m_Type;
+}
+
 Boundable& Boundable::operator = (Boundable&& boundable) noexcept
 {
     m_ID = boundable.m_ID;

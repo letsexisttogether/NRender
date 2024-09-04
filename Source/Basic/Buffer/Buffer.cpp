@@ -1,5 +1,6 @@
 #include "Buffer.hpp"
 
+#include <iostream>
 #include <GLEW/glew.h>
 #include <GML/Vector/Definitions.hpp>
 
@@ -46,6 +47,8 @@ BufferTDef(void)::UpdateData(OldStorage data, const Count count,
 {
     if (count + offset > m_MaxCount)
     {
+        std::cerr << "The max count is reached\n";
+
         return;
     }
 

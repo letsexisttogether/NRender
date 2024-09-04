@@ -29,6 +29,8 @@ void VertexArray::Bind() noexcept
 
 void VertexArray::UnBind() noexcept
 {
+    m_CurrentBoundID = 0;
+
     glBindVertexArray(0);
 }
 

@@ -1,5 +1,4 @@
 #include "Application.hpp"
-#include "Scene/Dividable/DividableScene.hpp"
 
 #include <iostream>
 #include <cassert>
@@ -32,7 +31,7 @@ void Application::Init() noexcept
     }
 
 
-    s_App->m_Scene.reset(new DividableScene{});
+    s_App->m_Scene.reset();
 }
 
 Application& Application::GetApp() noexcept
@@ -53,13 +52,10 @@ void Application::DoTheHardWork() noexcept
 {
     while(m_ShouldContinue && !glfwWindowShouldClose(m_Window))
     {
-        m_Scene->UpdateGraphics();
-
-        m_Scene->UpdateLogic();
     }
 }
 
-Scene* const Application::GetScene() noexcept
+Application::Scene* const Application::GetScene() noexcept
 {
     return m_Scene.get();
 }

@@ -4,11 +4,10 @@
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "Scene/Scene.hpp"
-
 class Application
 {
 public:
+    using Scene = std::int32_t*;
     using ScenePtr = std::shared_ptr<Scene>;
 
 public:
