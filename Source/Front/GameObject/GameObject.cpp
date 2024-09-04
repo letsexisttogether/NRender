@@ -1,6 +1,8 @@
 #include "GameObject.hpp"
 
+#include <cassert>
+
 void GameObject::Draw() noexcept
 {
-    static_assert("How the fuck it come that you called this Draw()?");
+    assert(false && "How the fuck it come that you called this Draw()?");
 }

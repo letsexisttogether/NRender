@@ -14,7 +14,6 @@ void Camera::Draw() noexcept
     m_Program.SetUniform("projection", m_Projection);
 }
 
-
 void Camera::CalculateProjection() noexcept
 {
     m_Projection = GML::GetOrthogonal(m_LeftBottom.X(), m_RightTop.X(),

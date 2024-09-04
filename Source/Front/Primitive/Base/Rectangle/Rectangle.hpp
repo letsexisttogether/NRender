@@ -20,9 +20,7 @@ public:
 
     virtual ~Rectangle() = default;
 
-    Position GetOrigin() const noexcept;
-
-    Position GetLeftBotton() const noexcept;
+    Position GetLeftBottom() const noexcept;
     Position GetRightTop() const noexcept;
 
     Rectangle& operator = (const Rectangle&) noexcept = default;

@@ -1,6 +1,8 @@
 #include "ChunkManager.hpp"
 
+#include "Application/Application.hpp"
 #include "Front/Collider/Collider.hpp"
+#include "Front/GameObject/GameObject.hpp"
 
 #include <utility>
 
@@ -15,11 +17,11 @@ void ChunkManager::DistributeObject(const IDGenerator::ID id) noexcept
 
     // This should be
     // const Object& object = World::GetWorld().GetObject(id);
-    const Rectangle object{};
+    GameObject* object = Application::GetApp().GetScene()->GetObject(id);
 
     for (auto& [ID, chunk] : m_Chunks)
     {
-        if (Collider::IsCollision(chunk, object))
+        if (Collider::IsCollision(chunk, *object))
         {
             chunk.AddObject(id);
         }

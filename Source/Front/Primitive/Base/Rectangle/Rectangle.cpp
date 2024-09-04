@@ -4,7 +4,7 @@ Rectangle::Rectangle(const Position leftBottom, const Position rightTop)
     : m_LeftBottom{ leftBottom }, m_RightTop{ rightTop }
 {}
 
-Rectangle::Position Rectangle::GetLeftBotton() const noexcept
+Rectangle::Position Rectangle::GetLeftBottom() const noexcept
 {
     return m_LeftBottom;
 }
