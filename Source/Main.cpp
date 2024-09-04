@@ -12,16 +12,9 @@
 #include <GML/Variations/Transformation.hpp>
 #include <GML/Variations/Projection.hpp>
 #include <GML/Utility/Operations.hpp>
-#include "GML/Vector/Definitions.hpp"
+#include <GML/Vector/Definitions.hpp>
 
-#include "Application/Application.hpp"
-#include "Basic/GPUProgram/GPUProgram.hpp"
-#include "Basic/AttributePointer/AttributePointer.hpp"
-#include "Basic/VertexArray/VertexArray.hpp"
-#include "Basic/Buffer/IndexBuffer.hpp"
-#include "Basic/Buffer/VertexBuffer.hpp"
-#include "Utility/FileReader/FileReader.hpp"
-#include "Utility/TextureSpawn/TextureSpawner.hpp"
+#include "Window/Window.hpp"
 #include "Utility/FpsCounter/FpsCounter.hpp"
 
 GLFWwindow* Initialize() noexcept;
@@ -30,91 +23,50 @@ void ProcessInput(GLFWwindow* window);
 
 void CheckOpenGLError(const char* functionName); 
 
-const Texture::Resolution windowWidth = 1400;
-const Texture::Resolution windowHeight = 800;
-
 std::int32_t main(std::int32_t argc, char** argv)
 {
-    Application::Init();
+    Window window{ "Hello OPPL", { 1400, 800 } };
 
-    GLFWwindow* window = Application::GetApp().GetWindow(); 
+    /*
+    Render render{};
 
-    if (!window)
+    Sprite sprite{ Triangle()
+    render.Draw(
+
+    */
+
+    if (glewInit() != GLEW_OK)
     {
-        return EXIT_FAILURE;
+        std::cerr << "Failed to initialize GLEW" << std::endl;
     }
-
-    if (argc < 2)
-    {
-        std::cerr << "The texture name were not provided" << std::endl;
-
-        return EXIT_FAILURE;
-    }
-
-    const Vertex2DBuffer::Count objectsCount = 
-        ((argc > 2) ? (std::atoi(argv[2])) : (1));
-
-    TextureSpawner spawner{ TexFillParams{}, GL_TEXTURE0 };
-
-    Texture firstTexture{ spawner.LoadTexture(argv[1]) };
-
-    std::cout << "Hello, CloseGH again" << std::endl;
-
-    const FileReader reader{};
-
-    const std::string shadersPath
-    {
-        "D:/Projects/OPPL/Shaders/"
-    };
-
-    Shader firstVertexShader
-    {
-        GL_VERTEX_SHADER,
-        reader.Read(shadersPath + "Default.vert")
-    };
-    Shader firstFragmenShader 
-    {
-        GL_FRAGMENT_SHADER,
-        reader.Read(shadersPath + "Default.frag")
-    };
-
-    GPUProgram firstProgram 
-    { 
-        std::move(firstVertexShader),
-        std::move(firstFragmenShader)
-    };
-
-    firstProgram.SetUniform("texture1", firstTexture.GetSlot());
-
-    const float halfWindowWidth = windowWidth / 2.0f;
-    const float halfWindowHeight = windowHeight / 2.0f;
 
     FpsCounter counter{};
 
-    while (!glfwWindowShouldClose(window))
+    const Resolution aspectRatio = window.GetAspectRatio();
+
+    std::cout << "The aspect ratio is " << aspectRatio.Width << ' '
+        << aspectRatio.Height << '\n'; 
+
+    while (!window.ShouldClose())
     {
         const float time = glfwGetTime();
 
-        ProcessInput(window);
-
         const FpsCounter::FPS fps = counter.GetFPS();
-        glfwSetWindowTitle(window, std::to_string(fps).c_str());
+        window.SetTitle(std::to_string(fps));
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
+        window.SwapBuffers();
 
         glfwPollEvents();
     }
 
-    Application::CleanUp();
-    
     return EXIT_SUCCESS;
 }
 
 // nastya 
 
-
+/*
 GLFWwindow* Initialize() noexcept
 {
     if (!glfwInit())
@@ -146,6 +98,7 @@ GLFWwindow* Initialize() noexcept
 
     return window;
 }
+*/
 
 void ProcessInput(GLFWwindow* window)
 {
