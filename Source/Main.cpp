@@ -12,109 +12,93 @@
 #include <GML/Variations/Transformation.hpp>
 #include <GML/Variations/Projection.hpp>
 #include <GML/Utility/Operations.hpp>
-#include "GML/Vector/Definitions.hpp"
+#include <GML/Vector/Definitions.hpp>
 
-#include "Application/Application.hpp"
-#include "Basic/GPUProgram/GPUProgram.hpp"
-#include "Basic/AttributePointer/AttributePointer.hpp"
-#include "Basic/VertexArray/VertexArray.hpp"
-#include "Basic/Buffer/IndexBuffer.hpp"
-#include "Basic/Buffer/VertexBuffer.hpp"
-#include "Utility/FileReader/FileReader.hpp"
-#include "Utility/TextureSpawn/TextureSpawner.hpp"
+#include "Window/Window.hpp"
+#include "Render/Render.hpp"
 #include "Utility/FpsCounter/FpsCounter.hpp"
 
-GLFWwindow* Initialize() noexcept;
+// GLFWwindow* Initialize() noexcept;
 
 void ProcessInput(GLFWwindow* window);
 
 void CheckOpenGLError(const char* functionName); 
 
-const Texture::Resolution windowWidth = 1400;
-const Texture::Resolution windowHeight = 800;
-
 std::int32_t main(std::int32_t argc, char** argv)
 {
-    Application::Init();
+    Window window{ "Hello NRender", { 1400, 800 } };
+    Render::Init();
 
-    GLFWwindow* window = Application::GetApp().GetWindow(); 
+    std::cout << std::boolalpha << Window::IsGLFWInit() << std::endl;
 
-    if (!window)
+    /*
+    Render
+
+    Sprite sprite{ Base, TextureID, TextureBounds, ShaderID, 
+
+    VAO vao{};
+
+    Vertex2DBuffer buffer
     {
-        return EXIT_FAILURE;
-    }
-
-    if (argc < 2)
-    {
-        std::cerr << "The texture name were not provided" << std::endl;
-
-        return EXIT_FAILURE;
-    }
-
-    const Vertex2DBuffer::Count objectsCount = 
-        ((argc > 2) ? (std::atoi(argv[2])) : (1));
-
-    TextureSpawner spawner{ TexFillParams{}, GL_TEXTURE0 };
-
-    Texture firstTexture{ spawner.LoadTexture(argv[1]) };
-
-    std::cout << "Hello, CloseGH again" << std::endl;
-
-    const FileReader reader{};
-
-    const std::string shadersPath
-    {
-        "D:/Projects/OPPL/Shaders/"
+        Position, 
     };
 
-    Shader firstVertexShader
-    {
-        GL_VERTEX_SHADER,
-        reader.Read(shadersPath + "Default.vert")
-    };
-    Shader firstFragmenShader 
-    {
-        GL_FRAGMENT_SHADER,
-        reader.Read(shadersPath + "Default.frag")
-    };
+    Base: 
+        Triangle{ Left, Right, Top }
+        Rectangle{ LeftBottom, RightTop }
+        Circle{ Radius, Position, Rotation, TrianglesCount };
 
-    GPUProgram firstProgram 
-    { 
-        std::move(firstVertexShader),
-        std::move(firstFragmenShader)
-    };
+    Render::Draw(sprite);
 
-    firstProgram.SetUniform("texture1", firstTexture.GetSlot());
+    Batching
 
-    const float halfWindowWidth = windowWidth / 2.0f;
-    const float halfWindowHeight = windowHeight / 2.0f;
+    Render::Draw(Sprite& sprite):
+        m_ShaderManager.Get(sprite.ShaderID).Bind();
+
+        sprite.VAO.Bind();
+        sprite.Draw();
+
+    1. Draw every sprite individually
+
+    Render::Draw(Sprite& sprite):
+       Shader& shader = m_ShaderManager.GetShader(sprite.ShaderID);
+       shader.Bind();
+
+       Texture& texture = m_TextureManager.GetTexture(sprite.TextureID);
+       shader.SetUniform("texture", texture.GetSlot());
+
+       sprite.VAO.Bind();
+
+       glDrawElementArray();
+    */
 
     FpsCounter counter{};
 
-    while (!glfwWindowShouldClose(window))
+    const Resolution aspectRatio = window.GetAspectRatio();
+
+    std::cout << "The aspect ratio is " << aspectRatio.Width << ' '
+        << aspectRatio.Height << '\n'; 
+
+    while (!window.ShouldClose())
     {
         const float time = glfwGetTime();
 
-        ProcessInput(window);
-
         const FpsCounter::FPS fps = counter.GetFPS();
-        glfwSetWindowTitle(window, std::to_string(fps).c_str());
+        window.SetTitle(std::to_string(fps));
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
+        window.SwapBuffers();
 
         glfwPollEvents();
     }
 
-    Application::CleanUp();
-    
     return EXIT_SUCCESS;
 }
 
 // nastya 
 
-
+/*
 GLFWwindow* Initialize() noexcept
 {
     if (!glfwInit())
@@ -146,6 +130,7 @@ GLFWwindow* Initialize() noexcept
 
     return window;
 }
+*/
 
 void ProcessInput(GLFWwindow* window)
 {
