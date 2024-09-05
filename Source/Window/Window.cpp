@@ -6,7 +6,11 @@
 Window::Window(const Title& title, const Resolution resolution)
     : m_Title{ title } 
 {
+    assert(!s_IsGLFWInit && "It's possible to create one Window only");
+
     assert(glfwInit() && "Cannot initialize GLFW");
+
+    s_IsGLFWInit = true;
 
     m_BaseWindow = glfwCreateWindow(resolution.Width, resolution.Height,
         m_Title.c_str(), nullptr, nullptr);
@@ -17,6 +21,8 @@ Window::Window(const Title& title, const Resolution resolution)
 
 Window::~Window()
 {
+    s_IsGLFWInit = false; 
+
     glfwTerminate();
 }
 

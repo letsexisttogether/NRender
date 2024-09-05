@@ -44,6 +44,9 @@ public:
 
     Window& operator = (const Window&) noexcept = delete;
     Window& operator = (Window&&) noexcept = delete;
+
+private:
+    inline static bool s_IsGLFWInit{ false };
     
 private:
     Title m_Title{}; 
