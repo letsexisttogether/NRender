@@ -14,6 +14,9 @@ public:
     using AspectRatio = float;
 
 public:
+    static bool IsGLFWInit() noexcept;
+
+public:
     Window() = delete;
     Window(const Window&) = delete;
     Window(Window&&) = delete;
@@ -44,6 +47,9 @@ public:
 
     Window& operator = (const Window&) noexcept = delete;
     Window& operator = (Window&&) noexcept = delete;
+
+private:
+    static void InitGLFW() noexcept;
 
 private:
     inline static bool s_IsGLFWInit{ false };

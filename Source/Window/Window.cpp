@@ -3,14 +3,15 @@
 #include <cassert>
 #include <numeric>
 
+bool Window::IsGLFWInit() noexcept
+{
+    return s_IsGLFWInit;
+}
+
 Window::Window(const Title& title, const Resolution resolution)
     : m_Title{ title } 
 {
-    assert(!s_IsGLFWInit && "It's possible to create one Window only");
-
-    assert(glfwInit() && "Cannot initialize GLFW");
-
-    s_IsGLFWInit = true;
+    InitGLFW();
 
     m_BaseWindow = glfwCreateWindow(resolution.Width, resolution.Height,
         m_Title.c_str(), nullptr, nullptr);
@@ -98,4 +99,13 @@ Window::AspectRatio Window::GetRelatedAspectRatio() const noexcept
     const Resolution resolution{ GetResolution() };
 
     return static_cast<AspectRatio>(resolution.Width) / resolution.Height;
+}
+
+void Window::InitGLFW() noexcept
+{
+    assert(!s_IsGLFWInit && "It's possible to create one Window only");
+
+    assert(glfwInit() && "Cannot initialize GLFW");
+
+    s_IsGLFWInit = true;
 }
