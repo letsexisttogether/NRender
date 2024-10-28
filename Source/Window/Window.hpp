@@ -5,6 +5,8 @@
 
 #include "Resolution.hpp"
 
+NRenderSpaceStart
+
 class Window
 {
 public:
@@ -59,3 +61,5 @@ private:
 
     GLFWwindow* m_BaseWindow{};
 };
+
+NRenderSpaceEnd

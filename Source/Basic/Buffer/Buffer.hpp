@@ -42,9 +42,6 @@ protected:
     void Generate() noexcept override;
 
 private:
-    
-private:
     Count m_MaxCount{};
-    
     Usage m_Usage{};
 };

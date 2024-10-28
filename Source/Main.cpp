@@ -1,3 +1,5 @@
+#include "Shape/Triangle/Triangle.hpp"
+#include "Sprite/Sprite.hpp"
 #include <cassert>
 #include <cstdint>
 #include <cstdlib>
@@ -18,6 +20,8 @@
 #include "Render/Render.hpp"
 #include "Utility/FpsCounter/FpsCounter.hpp"
 
+using namespace NRender;
+
 // GLFWwindow* Initialize() noexcept;
 
 void ProcessInput(GLFWwindow* window);
@@ -31,46 +35,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     std::cout << std::boolalpha << Window::IsGLFWInit() << std::endl;
 
-    /*
-    Render
-
-    Sprite sprite{ Base, TextureID, TextureBounds, ShaderID, 
-
-    VAO vao{};
-
-    Vertex2DBuffer buffer
-    {
-        Position, 
-    };
-
-    Base: 
-        Triangle{ Left, Right, Top }
-        Rectangle{ LeftBottom, RightTop }
-        Circle{ Radius, Position, Rotation, TrianglesCount };
-
-    Render::Draw(sprite);
-
-    Batching
-
-    Render::Draw(Sprite& sprite):
-        m_ShaderManager.Get(sprite.ShaderID).Bind();
-
-        sprite.VAO.Bind();
-        sprite.Draw();
-
-    1. Draw every sprite individually
-
-    Render::Draw(Sprite& sprite):
-       Shader& shader = m_ShaderManager.GetShader(sprite.ShaderID);
-       shader.Bind();
-
-       Texture& texture = m_TextureManager.GetTexture(sprite.TextureID);
-       shader.SetUniform("texture", texture.GetSlot());
-
-       sprite.VAO.Bind();
-
-       glDrawElementArray();
-    */
+    // Sprite sprite{ Triangle{ {}, {}, {} }, Triangle{ {}, {}, {} }, 0, 0 };
 
     FpsCounter counter{};
 

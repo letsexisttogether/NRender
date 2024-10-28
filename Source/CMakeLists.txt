@@ -6,6 +6,9 @@ target_include_directories(${PROJECT_NAME}
 
 add_subdirectory(Basic)
 add_subdirectory(Window)
+add_subdirectory(Render)
+add_subdirectory(Sprite)
+add_subdirectory(Shape)
 add_subdirectory(Utility)
 
 # add_subdirectory(Global)

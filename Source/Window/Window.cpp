@@ -3,6 +3,8 @@
 #include <cassert>
 #include <numeric>
 
+NRenderSpaceStart
+
 bool Window::IsGLFWInit() noexcept
 {
     return s_IsGLFWInit;
@@ -109,3 +111,5 @@ void Window::InitGLFW() noexcept
 
     s_IsGLFWInit = true;
 }
+
+NRenderSpaceEnd

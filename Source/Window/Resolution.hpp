@@ -2,6 +2,10 @@
 
 #include <cstdint>
 
+#include "Utility/Namespace.hpp"
+
+NRenderSpaceStart
+
 class Resolution
 {
 public:
@@ -11,3 +15,5 @@ public:
     Dimension Width{}; 
     Dimension Height{}; 
 };
+
+NRenderSpaceEnd

@@ -47,7 +47,7 @@ BufferTDef(void)::UpdateData(OldStorage data, const Count count,
 {
     if (count + offset > m_MaxCount)
     {
-        std::cerr << "The max count is reached\n";
+        std::cerr << "The operation would exceed the max count" << std::endl;
 
         return;
     }
@@ -65,6 +65,7 @@ BufferTDef(void)::UpdateData(const ModernStorage& data, const Count offset)
 BufferTDef(void)::ClearData(const Count count, const Count offset) noexcept
 {
     // TODO: probably implement this methods
+    static_assert("Buffer::ClearData() is unimplemened");
 }
 
 BufferTDef(typename BufferT::Count)::GetMaxCount() const noexcept
