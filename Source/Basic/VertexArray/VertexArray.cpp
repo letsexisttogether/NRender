@@ -1,6 +1,6 @@
 #include "VertexArray.hpp"
 
-#include "GLEW/glew.h"
+#include <GL/glew.h>
 
 VertexArray::VertexArray(const bool shouldPrepare) 
 {

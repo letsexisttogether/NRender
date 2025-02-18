@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "GLEW/glew.h"
+#include <GL/glew.h>
 
 class TexFillParams 
 {

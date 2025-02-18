@@ -1,7 +1,7 @@
 #include "TextureSpawner.hpp"
 
-#include <STB/stb_image.h>
-#include <GLEW/glew.h>
+#include <GL/glew.h>
+#include <stb_image.h>
 
 TextureSpawner::TextureSpawner(const TexFillParams& fillParams,
     const Texture::Slot slot)

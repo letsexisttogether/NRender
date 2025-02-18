@@ -8,9 +8,9 @@
 #define GLEW_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 
-#include <GLEW/glew.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <STB/stb_image.h>
+#include <stb_image.h>
 #include <GML/Variations/Transformation.hpp>
 #include <GML/Variations/Projection.hpp>
 #include <GML/Utility/Operations.hpp>

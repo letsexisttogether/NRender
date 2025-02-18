@@ -1,6 +1,6 @@
 #include "Shader.hpp"
 
-#include "GLEW/glew.h"
+#include <GL/glew.h>
 
 Shader::Shader(const Type type, const ShaderSource& source,
     const bool shouldPrepare)

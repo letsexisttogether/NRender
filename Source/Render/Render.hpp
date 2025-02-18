@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #define GLEW_STATIC
-#include <GLEW/glew.h>
+#include <GL/glew.h>
 
 #include "Sprite/Sprite.hpp"
 

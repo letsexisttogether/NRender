@@ -1,6 +1,6 @@
 #include "Texture.hpp"
 
-#include "GLEW/glew.h"
+#include <GL/glew.h>
 
 Texture::Texture(Data const data, const Resolution width,
     const Resolution height, const TexFillParams& fillParams, const Slot slot,

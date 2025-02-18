@@ -1,6 +1,6 @@
 #include "GPUProgram.hpp"
 
-#include <GLEW/glew.h>
+#include <GL/glew.h>
 
 GPUProgram::GPUProgram(Shader&& vertexSpawner, Shader&& fragmentSpawner,
     const bool shouldPrepare)

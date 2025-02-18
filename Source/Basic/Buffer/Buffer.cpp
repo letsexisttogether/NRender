@@ -1,7 +1,7 @@
 #include "Buffer.hpp"
 
 #include <iostream>
-#include <GLEW/glew.h>
+#include <GL/glew.h>
 #include <GML/Vector/Definitions.hpp>
 
 #define Template template <class _Vertex, Boundable::Type _Type>

@@ -1,6 +1,6 @@
 #include "AttributePointer.hpp"
 
-#include <GLEW/glew.h>
+#include <GL/glew.h>
 
 #include "Basic/Buffer/VertexBuffer.hpp"
 
