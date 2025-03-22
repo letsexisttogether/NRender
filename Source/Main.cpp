@@ -1,24 +1,8 @@
-#include "Shape/Triangle/Triangle.hpp"
-#include "Sprite/Sprite.hpp"
-#include <cassert>
-#include <cstdint>
-#include <cstdlib>
 #include <iostream>
+#include <thread>
 
-#define GLEW_STATIC
-#define STB_IMAGE_IMPLEMENTATION
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <stb_image.h>
-#include <GML/Variations/Transformation.hpp>
-#include <GML/Variations/Projection.hpp>
-#include <GML/Utility/Operations.hpp>
-#include <GML/Vector/Definitions.hpp>
-
-#include "Window/Window.hpp"
 #include "Render/Render.hpp"
-#include "Utility/FpsCounter/FpsCounter.hpp"
+#include "Window/Window.hpp"
 
 using namespace NRender;
 
@@ -33,23 +17,11 @@ std::int32_t main(std::int32_t argc, char** argv)
     Window window{ "Hello NRender", { 1400, 800 } };
     Render::Init();
 
-    std::cout << std::boolalpha << Window::IsGLFWInit() << std::endl;
-
-    // Sprite sprite{ Triangle{ {}, {}, {} }, Triangle{ {}, {}, {} }, 0, 0 };
-
-    FpsCounter counter{};
-
-    const Resolution aspectRatio = window.GetAspectRatio();
-
-    std::cout << "The aspect ratio is " << aspectRatio.Width << ' '
-        << aspectRatio.Height << '\n'; 
-
     while (!window.ShouldClose())
     {
         const float time = glfwGetTime();
 
-        const FpsCounter::FPS fps = counter.GetFPS();
-        window.SetTitle(std::to_string(fps));
+        window.SetTitle("Hello");
 
         glClear(GL_COLOR_BUFFER_BIT);
 

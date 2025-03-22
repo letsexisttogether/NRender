@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Utility/Naming.hpp"
-#include "Basic/VertexArray/VertexArray.hpp"
+#include "Basic/Buffer/VertexBuffer.hpp"
+#include <optional>
 
 NRenderSpaceStart
 
@@ -15,10 +16,10 @@ public:
 
     virtual ~Shape() = default;
 
-    Vertices GetVertices() noexcept;
+    Vertex2DBuffer GetVBO() noexcept;
+    // std::optional<EBO> GetEBO() noexcept;
 
 protected:
-    Vertices m_Vertices{};
 };
 
 NRenderSpaceEnd

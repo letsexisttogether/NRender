@@ -17,6 +17,7 @@ void Render::InitGLEW() noexcept
 }
 
 /*
+Nice plane. Delete it
 void Render::DrawSprite(const ID spriteID) noexcept
 {
     auto& sprite = m_Sprites[spriteID];
@@ -33,10 +34,5 @@ void Render::DrawSprite(const ID spriteID) noexcept
     // Call glDraw(...)
 }
 */
-
-void Render::Draw(const std::size_t count) noexcept
-{
-     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
-}
 
 NRenderSpaceEnd

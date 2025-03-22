@@ -1,5 +1,4 @@
 #include "Window.hpp"
-#include "GLFW/glfw3.h"
 
 #include <cassert>
 #include <numeric>
@@ -42,10 +41,7 @@ void Window::SwapBuffers() noexcept
 
 const Window::Title& Window::GetTitle() const noexcept
 {
-
-    return 
-    glfwGetWindowTitle(m_BaseWindow);
-;
+    return m_Title;
 }
 
 void Window::SetTitle(const Title& title) noexcept
