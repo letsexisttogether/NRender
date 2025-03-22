@@ -1,29 +1,53 @@
 #include <iostream>
-#include <thread>
+#include <cassert>
+#include <filesystem>
+#include <fstream>
+#include <ios>
+#include <vector>
+
+#include <GML/Vector/Definitions.hpp>
 
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 
 using namespace NRender;
 
-// GLFWwindow* Initialize() noexcept;
+std::uint32_t CreateVAO() noexcept;
+std::uint32_t CreateGPUProgram() noexcept;
 
-void ProcessInput(GLFWwindow* window);
-
-void CheckOpenGLError(const char* functionName); 
+std::vector<char> ReadShader(const std::string& fileName) noexcept;
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
     Window window{ "Hello NRender", { 1400, 800 } };
     Render::Init();
 
+    const std::uint32_t VAO = CreateVAO();
+
+    const std::uint32_t gpuProgram = CreateGPUProgram();
+
+    const GML::Vec3f initialColor{ 1.0f };
+
+    const std::int32_t realColorLocation = glGetUniformLocation
+        (gpuProgram, "u_RealColor");
+
+
     while (!window.ShouldClose())
     {
         const float time = glfwGetTime();
 
-        window.SetTitle("Hello");
-
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindVertexArray(VAO);
+
+        glUseProgram(gpuProgram);
+
+        const GML::Vec3f realColor{ initialColor * std::sin(time) };
+
+        glUniform3f(realColorLocation, realColor.X(),
+            realColor.Y(), realColor.Z());
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         window.SwapBuffers();
 
@@ -35,53 +59,98 @@ std::int32_t main(std::int32_t argc, char** argv)
 
 // nastya 
 
-/*
-GLFWwindow* Initialize() noexcept
+std::uint32_t CreateVAO() noexcept
 {
-    if (!glfwInit())
+    std::uint32_t VAO{};
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    std::uint32_t VBO{};
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    std::uint32_t EBO{};
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+    const std::vector<float> vertices
     {
-        std::cerr << "Can't initialize GLFW" << std::endl;
+        -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,
+        0.0f, 0.5f,     0.0f, 1.0f, 0.0f,
+        0.5f, -0.5f,    0.0f, 0.0f, 1.0f
+    };
 
-        return nullptr;
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "CloseGH",
-        nullptr, nullptr);
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(0);
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
-
-    if (glewInit() != GLEW_OK)
+    const std::vector<std::int32_t> indices
     {
-        std::cerr << "Failed to initialize GLEW" << std::endl;
+        0, 1, 2,
+    };
 
-        return nullptr;
-    }
 
-    return window;
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
+        vertices.data(), GL_STATIC_DRAW);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(std::int32_t),
+        indices.data(), GL_STATIC_DRAW);
+
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
+        5 * sizeof(float), reinterpret_cast<void*>(0));
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
+        5 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
+
+    return VAO;
 }
-*/
 
-void ProcessInput(GLFWwindow* window)
+std::uint32_t CreateGPUProgram() noexcept
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, true);
-    }
+    const std::uint32_t gpuProgram = glCreateProgram();
+
+    const auto vertexShaderSource = ReadShader("shader.vert");
+    const char* vertexShaderData = vertexShaderSource.data();
+
+    const std::uint32_t vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderData, nullptr);
+    glCompileShader(vertexShader);
+
+
+    const auto fragmentShaderSource = ReadShader("shader.frag");
+    const char* fragmentShaderData = fragmentShaderSource.data();
+
+    const std::uint32_t fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderData, nullptr);
+    glCompileShader(fragmentShader);
+
+    glAttachShader(gpuProgram, vertexShader);
+    glAttachShader(gpuProgram, fragmentShader);
+
+    glLinkProgram(gpuProgram);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    return gpuProgram;
 }
 
-void CheckOpenGLError(const char* functionName)
+std::vector<char> ReadShader(const std::string& fileName) noexcept
 {
-    for (GLenum err = glGetError(); err != GL_NO_ERROR; err = glGetError())
-    {
-        std::cerr << "OpenGL error in " 
-            << ": " << err << std::endl;
-    }
+    assert(std::filesystem::exists(fileName) && "File does not exist");
+
+    std::vector<char> shader{};
+
+    std::ifstream inputStream{ fileName };
+
+    inputStream.seekg(0, std::ios::end);
+    const std::streamsize fileSize = inputStream.tellg();
+    inputStream.seekg(0, std::ios::beg);
+
+    shader.resize(fileSize);
+
+    inputStream.read(shader.data(), fileSize);
+
+    return shader;
 }
