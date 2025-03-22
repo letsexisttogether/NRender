@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 #include <cassert>
 #include <filesystem>
@@ -9,10 +10,12 @@
 
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
+#include "Experimental/VAO/VertexArrayObject.hpp"
+#include "Experimental/VBO/VertexBufferObject.hpp"
 
 using namespace NRender;
 
-std::uint32_t CreateVAO() noexcept;
+VertexArrayObject CreateVAO() noexcept;
 std::uint32_t CreateGPUProgram() noexcept;
 
 std::vector<char> ReadShader(const std::string& fileName) noexcept;
@@ -22,7 +25,7 @@ std::int32_t main(std::int32_t argc, char** argv)
     Window window{ "Hello NRender", { 1400, 800 } };
     Render::Init();
 
-    const std::uint32_t VAO = CreateVAO();
+    VertexArrayObject VAO{ CreateVAO() };
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
 
@@ -38,7 +41,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(VAO);
+        VAO.Bind();
 
         glUseProgram(gpuProgram);
 
@@ -59,15 +62,11 @@ std::int32_t main(std::int32_t argc, char** argv)
 
 // nastya 
 
-std::uint32_t CreateVAO() noexcept
+VertexArrayObject CreateVAO() noexcept
 {
-    std::uint32_t VAO{};
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    VertexArrayObject VAO{ true };
 
-    std::uint32_t VBO{};
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    VertexBufferObject VBO{ true };
 
     std::uint32_t EBO{};
     glGenBuffers(1, &EBO);
@@ -101,7 +100,7 @@ std::uint32_t CreateVAO() noexcept
         5 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glBindVertexArray(0);
+    VAO.Unbind();
 
     return VAO;
 }
