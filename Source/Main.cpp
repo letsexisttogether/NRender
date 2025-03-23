@@ -12,6 +12,7 @@
 #include "Window/Window.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
 #include "Experimental/Buffer/Buffer.hpp"
+#include "Experimental/VAP/VertexAttribPointer.hpp"
 
 using namespace NRender;
 
@@ -84,13 +85,15 @@ VertexArrayObject CreateVAO() noexcept
     VBO.SetData(vertices, GL_STATIC_DRAW);
     EBO.SetData(indices, GL_STATIC_DRAW); 
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
-        5 * sizeof(float), reinterpret_cast<void*>(0));
-    glEnableVertexAttribArray(0);
+    VertexAttribPointer<float> vap0
+    {
+        0, 2, GL_FLOAT, false, 5, 0
+    };
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-        5 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    VertexAttribPointer<float> vap1
+    {
+        vap0.SpawnNext(3)
+    };
 
     VAO.Unbind();
 
