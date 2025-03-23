@@ -11,7 +11,7 @@
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
-#include "Experimental/VBO/VertexBufferObject.hpp"
+#include "Experimental/Buffer/Buffer.hpp"
 
 using namespace NRender;
 
@@ -67,10 +67,7 @@ VertexArrayObject CreateVAO() noexcept
     VertexArrayObject VAO{ true };
 
     VertexBufferObject VBO{ true };
-
-    std::uint32_t EBO{};
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    ElementBufferObject EBO{ true };
 
     const std::vector<float> vertices
     {
@@ -84,13 +81,8 @@ VertexArrayObject CreateVAO() noexcept
         0, 1, 2,
     };
 
-
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
-        vertices.data(), GL_STATIC_DRAW);
-
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(std::int32_t),
-        indices.data(), GL_STATIC_DRAW);
-
+    VBO.SetData(vertices, GL_STATIC_DRAW);
+    EBO.SetData(indices, GL_STATIC_DRAW); 
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE,
         5 * sizeof(float), reinterpret_cast<void*>(0));
