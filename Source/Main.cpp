@@ -111,7 +111,6 @@ std::uint32_t CreateGPUProgram() noexcept
     glShaderSource(vertexShader, 1, &vertexShaderData, nullptr);
     glCompileShader(vertexShader);
 
-
     const auto fragmentShaderSource = ReadShader("shader.frag");
     const char* fragmentShaderData = fragmentShaderSource.data();
 
