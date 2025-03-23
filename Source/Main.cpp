@@ -8,11 +8,13 @@
 
 #include <GML/Vector/Definitions.hpp>
 
+#include "Experimental/Shape/Rectangle/Rectangle.hpp"
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
 #include "Experimental/Buffer/Buffer.hpp"
 #include "Experimental/VAP/VertexAttribPointer.hpp"
+#include "Experimental/Shape/Triangle/Triangle.hpp"
 
 using namespace NRender;
 
@@ -70,29 +72,23 @@ VertexArrayObject CreateVAO() noexcept
     VertexBufferObject VBO{ true };
     ElementBufferObject EBO{ true };
 
-    const std::vector<float> vertices
-    {
-        -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,
-        0.0f, 0.5f,     0.0f, 1.0f, 0.0f,
-        0.5f, -0.5f,    0.0f, 0.0f, 1.0f
+    std::unique_ptr<const Shape> triangle
+    { 
+        std::make_unique<Rectangle>
+        (
+            GML::Vec2f{ -0.5f, 0.5f },
+            GML::Vec2f{ 0.5f, 0.5f },
+            GML::Vec2f{ 0.5f, -0.5f },
+            GML::Vec2f{ -0.5f, -0.5f }
+        )
     };
 
-    const std::vector<std::int32_t> indices
-    {
-        0, 1, 2,
-    };
+    VBO.SetData(triangle->GetVertices(), GL_STATIC_DRAW);
+    EBO.SetData(triangle->GetIndices(), GL_STATIC_DRAW); 
 
-    VBO.SetData(vertices, GL_STATIC_DRAW);
-    EBO.SetData(indices, GL_STATIC_DRAW); 
-
-    VertexAttribPointer<float> vap0
+    VertexAttribPointer<GML::Vec2f> vap0
     {
-        0, 2, GL_FLOAT, false, 5, 0
-    };
-
-    VertexAttribPointer<float> vap1
-    {
-        vap0.SpawnNext(3)
+        0, 2, GL_FLOAT, false, 1, 0
     };
 
     VAO.Unbind();

@@ -1,10 +1,6 @@
 #pragma once
 
-#include "Utility/Naming.hpp"
-#include "Basic/Buffer/VertexBuffer.hpp"
-#include <optional>
-
-NRenderSpaceStart
+// NRenderSpaceStart
 
 class Shape
 {
@@ -16,10 +12,10 @@ public:
 
     virtual ~Shape() = default;
 
-    Vertex2DBuffer GetVBO() noexcept;
+
     // std::optional<EBO> GetEBO() noexcept;
 
 protected:
 };
 
-NRenderSpaceEnd
+// NRenderSpaceEnd
