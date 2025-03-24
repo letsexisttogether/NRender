@@ -27,6 +27,8 @@ public:
     void Bind() noexcept override;
     void Unbind() noexcept override;
 
+    void SetDivisor(const Size divisor) noexcept;
+
     // TODO: Think whether this method should be const-specified
     VertexAttribPointer SpawnNext(const Size size) noexcept;
 
@@ -68,6 +70,12 @@ template <typename _DataType>
 void VertexAttribPointer<_DataType>::Unbind() noexcept
 {
     glDisableVertexAttribArray(m_ID);
+}
+
+template <typename _DataType>
+void VertexAttribPointer<_DataType>::SetDivisor(const Size divisor) noexcept
+{
+    glVertexAttribDivisor(m_ID, divisor);
 }
 
 template <typename _DataType>

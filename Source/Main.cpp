@@ -9,6 +9,7 @@
 #include <GML/Vector/Definitions.hpp>
 
 
+#include "Core/Core.hpp"
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 
@@ -24,56 +25,25 @@
 using namespace NRender;
 
 VertexArrayObject CreateVAO() noexcept;
+VertexArrayObject CreateInstancedVAO() noexcept;
+
+std::vector<GML::Vec2f> CreateInstances() noexcept;
+
 std::uint32_t CreateGPUProgram() noexcept;
 
 std::vector<char> ReadShader(const std::string& fileName) noexcept;
+
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
     Window window{ "Hello NRender", { 1920, 1080 } };
     Render::Init();
 
-    std::unique_ptr<const Shape> triangle
-    { 
-        std::make_unique<Triangle>
-        (
-            ColoredVertex{ GML::Vec2f{ 0.0f, 0.5f },
-                GML::Vec3f{ 1.0f, 0.0f, 0.0f } },
-            ColoredVertex{ GML::Vec2f{ 0.5f, -0.5f },
-                GML::Vec3f{ 0.0f, 1.0f, 0.0f } },
-            ColoredVertex{ GML::Vec2f{ -0.5f, -0.5f },
-                GML::Vec3f{ 0.0f, 0.0f, 1.0f } }
-        )
-    };
-
-    std::unique_ptr<const Shape> rectangle 
-    { 
-        std::make_unique<Rectangle>
-        (
-            ColoredVertex{ GML::Vec2f{ -1.0f, 1.0f },
-                GML::Vec3f{ 1.0f } }, 
-            ColoredVertex{ GML::Vec2f{ 1.0f, 1.0f },
-                GML::Vec3f{ 1.0f } },
-            ColoredVertex{ GML::Vec2f{ 1.0f, -1.0f },
-                GML::Vec3f{ 1.0f } },
-            ColoredVertex{ GML::Vec2f{ -1.0f, -1.0f },
-                GML::Vec3f{ 1.0f } }
-        )
-    };
-
-    std::vector<Sprite> sprites{};
-    sprites.reserve(2);
-
-    sprites.push_back(Sprite{ *rectangle.get() });
-    sprites.push_back(Sprite{ *triangle.get() });
-
+    VertexArrayObject VAO{ CreateInstancedVAO() };
+    VAO.Bind();
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
-
-    const GML::Vec3f initialColor{ 1.0f };
-
-    const std::int32_t realColorLocation = glGetUniformLocation
-        (gpuProgram, "u_RealColor");
+    glUseProgram(gpuProgram);
 
     while (!window.ShouldClose())
     {
@@ -81,18 +51,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(gpuProgram);
-
-        const GML::Vec3f realColor{ initialColor * std::sin(time) };
-
-        glUniform3f(realColorLocation, realColor.X(),
-            realColor.Y(), realColor.Z());
-
-
-        for (auto& sprite : sprites)
-        {
-            Render::DrawSprite(sprite);
-        }
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
 
         window.SwapBuffers();
 
@@ -140,6 +99,76 @@ VertexArrayObject CreateVAO() noexcept
     VAO.Unbind();
 
     return VAO;
+}
+
+VertexArrayObject CreateInstancedVAO() noexcept
+{
+    VertexArrayObject VAO{ true };
+
+    VertexBufferObject VBO{ true };
+
+    const std::vector<float> vertices
+    {
+        -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+        0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+        -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
+
+        -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+        0.05f, -0.05f,  0.0f, 1.0f, 0.0f,   
+        0.05f,  0.05f,  0.0f, 1.0f, 1.0f	
+    };
+
+    VBO.SetData(vertices, GL_STATIC_DRAW);
+
+    VertexAttribPointer<float> vap0
+    {
+        0, 2, GL_FLOAT, false, 5, 0
+    };
+
+    VertexAttribPointer<float> vap1
+    {
+        vap0.SpawnNext(3)
+    };
+
+    VertexBufferObject instancedVBO{ true };
+
+    std::vector<GML::Vec2f> instances{ CreateInstances() };
+
+    instancedVBO.SetData(instances, GL_STATIC_DRAW);
+
+    VertexAttribPointer<GML::Vec2f> vap2
+    {
+        2, 2, GL_FLOAT, false, 2, 0
+    };
+    vap2.SetDivisor(1);
+
+    VAO.Unbind();
+
+    return VAO;
+}
+
+std::vector<GML::Vec2f> CreateInstances() noexcept
+{
+    std::vector<GML::Vec2f> offsets{};
+    offsets.reserve(100);
+
+    const float shift = 0.1f;
+
+    for (std::int32_t y = -10; y < 10; y += 2)
+    {
+        for (std::int32_t x = -10; x < 10; x += 2)
+        {
+            GML::Vec2f offset
+            {
+                static_cast<float>(x) / 10.0f + shift,
+                static_cast<float>(y) / 10.0f + shift
+            };
+
+            offsets.push_back(std::move(offset));
+        }
+    }
+    
+    return offsets;
 }
 
 std::uint32_t CreateGPUProgram() noexcept
