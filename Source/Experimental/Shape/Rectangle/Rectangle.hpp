@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Experimental/Shape/Shape.hpp"
+#include "Experimental/Vertex/ColoredVertex.hpp"
 
 class Rectangle : public Shape
 {
@@ -9,8 +10,11 @@ public:
     Rectangle(const Rectangle&) = delete;
     Rectangle(Rectangle&&) = default;
 
-    Rectangle(const GML::Vec2f a, const GML::Vec2f b,
-        const GML::Vec2f c, const GML::Vec2f d);
+    Rectangle(const Vertex a, const Vertex b,
+        const Vertex c, const Vertex d);
+
+    Rectangle(const ColoredVertex a, const ColoredVertex b,
+        const ColoredVertex c, const ColoredVertex  d);
 
     ~Rectangle() = default;
 

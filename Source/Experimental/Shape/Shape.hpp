@@ -6,7 +6,7 @@
 class Shape
 {
 public:
-    using Vertices = std::vector<GML::Vec2f>; 
+    using Vertices = std::vector<float>; 
     using Indices = std::vector<std::int32_t>;
 
 public:

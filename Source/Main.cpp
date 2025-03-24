@@ -9,6 +9,7 @@
 #include <GML/Vector/Definitions.hpp>
 
 #include "Experimental/Shape/Rectangle/Rectangle.hpp"
+#include "Experimental/Vertex/ColoredVertex.hpp"
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
@@ -25,7 +26,7 @@ std::vector<char> ReadShader(const std::string& fileName) noexcept;
 
 std::int32_t main(std::int32_t argc, char** argv)
 {
-    Window window{ "Hello NRender", { 1400, 800 } };
+    Window window{ "Hello NRender", { 1920, 1080 } };
     Render::Init();
 
     VertexArrayObject VAO{ CreateVAO() };
@@ -36,7 +37,6 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const std::int32_t realColorLocation = glGetUniformLocation
         (gpuProgram, "u_RealColor");
-
 
     while (!window.ShouldClose())
     {
@@ -76,19 +76,28 @@ VertexArrayObject CreateVAO() noexcept
     { 
         std::make_unique<Rectangle>
         (
-            GML::Vec2f{ -0.5f, 0.5f },
-            GML::Vec2f{ 0.5f, 0.5f },
-            GML::Vec2f{ 0.5f, -0.5f },
-            GML::Vec2f{ -0.5f, -0.5f }
+            ColoredVertex{ GML::Vec2f{ -0.5f, 0.5f },
+                GML::Vec3f{ 1.0f, 0.0f, 0.0f } },
+            ColoredVertex{ GML::Vec2f{ 0.5f, 0.5f },
+                GML::Vec3f{ 0.0f, 1.0f, 0.0f } },
+            ColoredVertex{ GML::Vec2f{ -0.5f, -0.5f },
+                GML::Vec3f{ 1.0f, 1.0f, 0.0f } },
+            ColoredVertex{ GML::Vec2f{ 0.5f, -0.5f },
+                GML::Vec3f{ 0.0f, 0.0f, 1.0f } }
         )
     };
-
+    
     VBO.SetData(triangle->GetVertices(), GL_STATIC_DRAW);
     EBO.SetData(triangle->GetIndices(), GL_STATIC_DRAW); 
 
-    VertexAttribPointer<GML::Vec2f> vap0
+    VertexAttribPointer<float> vap0
     {
-        0, 2, GL_FLOAT, false, 1, 0
+        0, 2, GL_FLOAT, false, 5, 0
+    };
+
+    VertexAttribPointer vap1
+    {
+        vap0.SpawnNext(3)
     };
 
     VAO.Unbind();
