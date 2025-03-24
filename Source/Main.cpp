@@ -74,15 +74,13 @@ VertexArrayObject CreateVAO() noexcept
 
     std::unique_ptr<const Shape> triangle
     { 
-        std::make_unique<Rectangle>
+        std::make_unique<Triangle>
         (
-            ColoredVertex{ GML::Vec2f{ -0.5f, 0.5f },
+            ColoredVertex{ GML::Vec2f{ 0.0f, 0.5f },
                 GML::Vec3f{ 1.0f, 0.0f, 0.0f } },
-            ColoredVertex{ GML::Vec2f{ 0.5f, 0.5f },
+            ColoredVertex{ GML::Vec2f{ 0.5f, -0.5f },
                 GML::Vec3f{ 0.0f, 1.0f, 0.0f } },
             ColoredVertex{ GML::Vec2f{ -0.5f, -0.5f },
-                GML::Vec3f{ 1.0f, 1.0f, 0.0f } },
-            ColoredVertex{ GML::Vec2f{ 0.5f, -0.5f },
                 GML::Vec3f{ 0.0f, 0.0f, 1.0f } }
         )
     };
