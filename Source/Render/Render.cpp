@@ -2,6 +2,9 @@
 
 #include <cassert>
 
+#include "Experimental/Sprite/Sprite.hpp"
+#include "Experimental/VAO/VertexArrayObject.hpp"
+
 NRenderSpaceStart
 
 void Render::Init() noexcept
@@ -14,6 +17,15 @@ void Render::Init() noexcept
 void Render::InitGLEW() noexcept
 {
     assert(glewInit() == GLEW_OK && "Failed to initialize GLEW");
+}
+
+void Render::DrawSprite(Sprite& sprite)
+{
+    VertexArrayObject& VAO = sprite.GetVAO();
+
+    VAO.Bind();
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 /*

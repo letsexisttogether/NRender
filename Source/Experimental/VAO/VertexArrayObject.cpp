@@ -1,6 +1,6 @@
 #include "VertexArrayObject.hpp"
 
-#include "Render/Render.hpp"
+#include "Core/Core.hpp"
 
 VertexArrayObject::VertexArrayObject(const bool shouldBind)
 {

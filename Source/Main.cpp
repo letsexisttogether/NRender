@@ -8,14 +8,18 @@
 
 #include <GML/Vector/Definitions.hpp>
 
-#include "Experimental/Shape/Rectangle/Rectangle.hpp"
-#include "Experimental/Vertex/ColoredVertex.hpp"
+
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
+
+#include "Experimental/Shape/Rectangle/Rectangle.hpp"
+#include "Experimental/Sprite/Sprite.hpp"
+#include "Experimental/Vertex/ColoredVertex.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
 #include "Experimental/Buffer/Buffer.hpp"
 #include "Experimental/VAP/VertexAttribPointer.hpp"
 #include "Experimental/Shape/Triangle/Triangle.hpp"
+#include "Experimental/Sprite/Sprite.hpp"
 
 using namespace NRender;
 
@@ -29,7 +33,23 @@ std::int32_t main(std::int32_t argc, char** argv)
     Window window{ "Hello NRender", { 1920, 1080 } };
     Render::Init();
 
-    VertexArrayObject VAO{ CreateVAO() };
+    std::unique_ptr<const Shape> triangle
+    { 
+        std::make_unique<Triangle>
+        (
+            ColoredVertex{ GML::Vec2f{ 0.0f, 0.5f },
+                GML::Vec3f{ 1.0f, 0.0f, 0.0f } },
+            ColoredVertex{ GML::Vec2f{ 0.5f, -0.5f },
+                GML::Vec3f{ 0.0f, 1.0f, 0.0f } },
+            ColoredVertex{ GML::Vec2f{ -0.5f, -0.5f },
+                GML::Vec3f{ 0.0f, 0.0f, 1.0f } }
+        )
+    };
+
+    Sprite sprite
+    {
+        *triangle.get()
+    };
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
 
@@ -44,7 +64,6 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        VAO.Bind();
 
         glUseProgram(gpuProgram);
 
@@ -53,7 +72,8 @@ std::int32_t main(std::int32_t argc, char** argv)
         glUniform3f(realColorLocation, realColor.X(),
             realColor.Y(), realColor.Z());
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        Render::DrawSprite(sprite);
 
         window.SwapBuffers();
 
@@ -86,7 +106,7 @@ VertexArrayObject CreateVAO() noexcept
     };
     
     VBO.SetData(triangle->GetVertices(), GL_STATIC_DRAW);
-    EBO.SetData(triangle->GetIndices(), GL_STATIC_DRAW); 
+    EBO.SetData(triangle->GetIndices(), GL_STATIC_DRAW);
 
     VertexAttribPointer<float> vap0
     {

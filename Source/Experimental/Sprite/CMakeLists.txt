@@ -1,0 +1,7 @@
+set(CD ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(SPRITE_SOURCES
+    ${CD}/Sprite.cpp
+
+    PARENT_SCOPE
+)

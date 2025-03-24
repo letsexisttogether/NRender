@@ -1,8 +1,8 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
 #include <string>
 
+#include "Core/Core.hpp"
 #include "Resolution.hpp"
 
 NRenderSpaceStart

@@ -1,5 +1,4 @@
 #include "Buffer.hpp"
-#include "Render/Render.hpp"
 
 template <GLenum _BufferType>
 Buffer<_BufferType>::Buffer(const bool shouldBind)
