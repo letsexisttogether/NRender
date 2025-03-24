@@ -46,10 +46,27 @@ std::int32_t main(std::int32_t argc, char** argv)
         )
     };
 
-    Sprite sprite
-    {
-        *triangle.get()
+    std::unique_ptr<const Shape> rectangle 
+    { 
+        std::make_unique<Rectangle>
+        (
+            ColoredVertex{ GML::Vec2f{ -1.0f, 1.0f },
+                GML::Vec3f{ 1.0f } }, 
+            ColoredVertex{ GML::Vec2f{ 1.0f, 1.0f },
+                GML::Vec3f{ 1.0f } },
+            ColoredVertex{ GML::Vec2f{ 1.0f, -1.0f },
+                GML::Vec3f{ 1.0f } },
+            ColoredVertex{ GML::Vec2f{ -1.0f, -1.0f },
+                GML::Vec3f{ 1.0f } }
+        )
     };
+
+    std::vector<Sprite> sprites{};
+    sprites.reserve(2);
+
+    sprites.push_back(Sprite{ *rectangle.get() });
+    sprites.push_back(Sprite{ *triangle.get() });
+
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
 
@@ -64,7 +81,6 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-
         glUseProgram(gpuProgram);
 
         const GML::Vec3f realColor{ initialColor * std::sin(time) };
@@ -73,7 +89,10 @@ std::int32_t main(std::int32_t argc, char** argv)
             realColor.Y(), realColor.Z());
 
 
-        Render::DrawSprite(sprite);
+        for (auto& sprite : sprites)
+        {
+            Render::DrawSprite(sprite);
+        }
 
         window.SwapBuffers();
 

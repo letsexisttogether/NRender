@@ -11,7 +11,7 @@ Rectangle::Rectangle(const Vertex a, const Vertex b,
         d.Coordinates.X(), d.Coordinates.Y(),
     };
 
-    m_Indices = Indices{ 0, 1, 2, 1, 3, 2 };
+    m_Indices = Indices{ 0, 1, 3, 1, 2, 3 };
 }
 
 Rectangle::Rectangle(const ColoredVertex a, const ColoredVertex b,
@@ -32,5 +32,5 @@ Rectangle::Rectangle(const ColoredVertex a, const ColoredVertex b,
         d.Color.X(), d.Color.Y(), d.Color.Z(),
     };
 
-    m_Indices = Indices{ 0, 1, 2, 1, 3, 2 };
+    m_Indices = Indices{ 0, 1, 3, 1, 2, 3 };
 }
