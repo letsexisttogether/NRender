@@ -34,6 +34,7 @@ protected:
     void Generate() noexcept override;
 };
 
+
 template <GLenum _BufferType>
 template <typename _Type>
 void Buffer<_BufferType>::SetData(const std::vector<_Type>& data,
