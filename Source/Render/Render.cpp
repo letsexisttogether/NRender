@@ -19,7 +19,7 @@ void Render::InitGLEW() noexcept
     assert(glewInit() == GLEW_OK && "Failed to initialize GLEW");
 }
 
-void Render::DrawSprite(Sprite& sprite)
+void Render::Draw(Sprite& sprite)
 {
     VertexArrayObject& VAO = sprite.GetVAO();
 

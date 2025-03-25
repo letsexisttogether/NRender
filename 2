@@ -45,8 +45,8 @@ std::int32_t main(std::int32_t argc, char** argv)
     Render::Init();
 
 
-    VertexArrayObject VAO{ CreateSeparateVAO() };
-    VAO.Bind();
+    Instance<GML::Vec2f> instance{ CreateInstance() };
+    instance.GetVAO().Bind();
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
     glUseProgram(gpuProgram);
@@ -57,7 +57,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
 
         window.SwapBuffers();
 
@@ -111,47 +111,25 @@ VertexArrayObject CreateSeparateVAO() noexcept
 {
     VertexArrayObject VAO{ true };
 
-    const std::vector<GML::Vec2f> positions
+    const std::vector<GML::Vec2f> position
     {
-        { -0.5f,  0.5f },
-        { 0.5f, -0.5f },
-        { -0.5f, -0.5f },
+        { -0.05f,  0.05f },
+        { 0.05f, -0.05f },
+        { -0.05f, -0.05f },
 
-        { -0.5f,  0.5f }, 
-        { 0.5f, -0.5f },
-        { 0.5f,  0.5f }
+        { -0.05f,  0.05f }, 
+        { 0.05f, -0.05f },
+        { 0.05f,  0.05f }
     };
 
     VertexBufferObject positionVBO{ true };
-    positionVBO.SetData(positions, GL_STATIC_DRAW);
+    positionVBO.SetData(position, GL_STATIC_DRAW);
 
     VertexAttribPointer<GML::Vec2f> positionVAP
     {
-        0, 2, GL_FLOAT, false, 1, 0
+        0, 2, GL_FLOAT, false, 2, 0
     };
 
-    const std::vector<GML::Vec3f> colors
-    {
-        { 1.0f, 0.0f, 0.0f },
-        { 0.0f, 1.0f, 0.0f },
-        { 0.0f, 0.0f, 1.0f },
-
-        { 1.0f, 0.0f, 0.0f },
-        { 0.0f, 1.0f, 0.0f },
-        { 0.0f, 1.0f, 1.0f }
-    };
-
-    VertexBufferObject colorVBO{ true };
-    colorVBO.SetData(colors, GL_STATIC_DRAW); 
-
-    VertexAttribPointer<GML::Vec3f> colorVAP
-    {
-        1, 3, GL_FLOAT, false, 1, 0
-    };
-
-    VAO.Unbind();
-
-    return VAO;
 }
 
 VertexArrayObject CreateInstancedVAO() noexcept
