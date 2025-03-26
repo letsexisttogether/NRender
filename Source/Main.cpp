@@ -11,6 +11,7 @@
 
 #include "Core/Core.hpp"
 #include "Experimental/Instance/Instance.hpp"
+#include "Experimental/Utility/Convert/GetGLType.hpp"
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 
@@ -31,7 +32,6 @@ VertexArrayObject CreateSeparateVAO() noexcept;
 VertexArrayObject CreateInstancedVAO() noexcept;
 Instance<GML::Vec2f> CreateInstance() noexcept;
 
-
 std::vector<GML::Vec2f> CreateInstances() noexcept;
 
 std::uint32_t CreateGPUProgram() noexcept;
@@ -44,9 +44,12 @@ std::int32_t main(std::int32_t argc, char** argv)
     Window window{ "Hello NRender", { 1920, 1080 } };
     Render::Init();
 
-
     VertexArrayObject VAO{ CreateSeparateVAO() };
     VAO.Bind();
+
+    const GLenum type = GetGLType<GML::Vec3i>();
+
+    std::cout << "The type is " << type << std::endl;
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
     glUseProgram(gpuProgram);

@@ -6,4 +6,4 @@
 // I may change it in the future, but as for now I like it this way
 
 template <typename _PrimitiveType>
-static GLenum GetGLType() noexcept;
+GLenum GetGLType() noexcept;
