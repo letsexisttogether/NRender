@@ -4,6 +4,7 @@
 
 #include "Core/Core.hpp"
 #include "Experimental/Boundable/Boundable.hpp"
+#include "Experimental/Utility/Convert/GetGLType.hpp"
 
 template <typename _DataType>
 class VertexAttribPointer : protected Boundable
@@ -19,8 +20,12 @@ public:
 
     VertexAttribPointer(const std::uint32_t location,
         const Size size, const GLenum type,
-        const bool m_ShouldNormalize, const Size stride,
+        const bool shouldNormalize, const Size stride,
         const Size previousSize);
+
+    VertexAttribPointer(const std::uint32_t location,
+        const Size size, const bool shouldNormalize,
+        const Size stride, const Size previousSize);
 
     ~VertexAttribPointer() = default;
 
@@ -46,12 +51,13 @@ protected:
     void* m_Offset{};
 };
 
+
 template <typename _DataType>
 VertexAttribPointer<_DataType>::VertexAttribPointer
     (const std::uint32_t location, const Size size,
-    const GLenum type, const bool m_ShouldNormalize,
+    const GLenum type, const bool shouldNormalize,
     const Size stride, const Size previousSize)
-    : m_Size{ size }, m_Type{ type }, m_ShouldNormalize{ m_ShouldNormalize },
+    : m_Size{ size }, m_Type{ type }, m_ShouldNormalize{ shouldNormalize },
     m_Stride{ stride }, 
     m_Offset{ reinterpret_cast<void*>(previousSize * sizeof(_DataType)) }
 {
@@ -59,6 +65,15 @@ VertexAttribPointer<_DataType>::VertexAttribPointer
 
     Init(true);
 }
+
+template <typename _DataType>
+VertexAttribPointer<_DataType>::VertexAttribPointer
+    (const std::uint32_t location, const Size size,
+    const bool shouldNormalize,
+    const Size stride, const Size previousSize)
+    : VertexAttribPointer{ location, size, GetGLType<_DataType>(),
+        shouldNormalize, stride, previousSize }
+{}
 
 template <typename _DataType>
 void VertexAttribPointer<_DataType>::Bind() noexcept

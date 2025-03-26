@@ -47,10 +47,6 @@ std::int32_t main(std::int32_t argc, char** argv)
     VertexArrayObject VAO{ CreateSeparateVAO() };
     VAO.Bind();
 
-    const GLenum type = GetGLType<GML::Vec3i>();
-
-    std::cout << "The type is " << type << std::endl;
-
     const std::uint32_t gpuProgram = CreateGPUProgram();
     glUseProgram(gpuProgram);
 
@@ -130,7 +126,7 @@ VertexArrayObject CreateSeparateVAO() noexcept
 
     VertexAttribPointer<GML::Vec2f> positionVAP
     {
-        0, 2, GL_FLOAT, false, 1, 0
+        0, 2, false, 1, 0
     };
 
     const std::vector<GML::Vec3f> colors
@@ -149,7 +145,7 @@ VertexArrayObject CreateSeparateVAO() noexcept
 
     VertexAttribPointer<GML::Vec3f> colorVAP
     {
-        1, 3, GL_FLOAT, false, 1, 0
+        1, 3, false, 1, 0
     };
 
     VAO.Unbind();
