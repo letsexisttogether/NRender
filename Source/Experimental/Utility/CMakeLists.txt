@@ -1,0 +1,7 @@
+set(CD ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(UTILITY_SOURCES
+    ${CD}/Convert/GetGLType.cpp
+
+    PARENT_SCOPE
+)

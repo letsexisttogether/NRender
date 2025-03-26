@@ -1,5 +1,6 @@
 add_subdirectory(Shape)
 add_subdirectory(Sprite)
+add_subdirectory(Utility)
 
 set (CD ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -10,6 +11,7 @@ set (EXP_SOURCES
     
     ${SHAPE_SOURCES}
     ${SPRITE_SOURCES}
+    ${UTILITY_SOURCES}
 
     PARENT_SCOPE
 )

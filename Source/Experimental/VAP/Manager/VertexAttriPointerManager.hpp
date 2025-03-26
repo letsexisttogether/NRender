@@ -9,8 +9,5 @@ class VertexAttribPointerManager
     VertexAttribPointerManager(VertexAttribPointerManager&&) = delete;
 
     ~VertexAttribPointerManager() = default;
-
-    template <typename _PrimitiveType>
-    static GLenum GetType() noexcept;
 };
 
