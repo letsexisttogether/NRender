@@ -44,7 +44,7 @@ Instance<_DataType>::Instance(const std::vector<float>& baseData,
 
     VertexAttribPointer<float> colorVAP
     {
-        vertexVAP.SpawnNext(3)
+        vertexVAP.SpawnNext<float>(3)
     };
 
     VertexBufferObject instanceVBO{ true };

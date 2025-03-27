@@ -8,29 +8,23 @@
 
 #include <GML/Vector/Definitions.hpp>
 
-
 #include "Core/Core.hpp"
-#include "Experimental/Instance/Instance.hpp"
-#include "Experimental/Utility/Convert/GetGLType.hpp"
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 
-#include "Experimental/Shape/Rectangle/Rectangle.hpp"
-#include "Experimental/Sprite/Sprite.hpp"
-#include "Experimental/Vertex/ColoredVertex.hpp"
+#include "Experimental/Instance/Instance.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
 #include "Experimental/Buffer/Buffer.hpp"
 #include "Experimental/VAP/VertexAttribPointer.hpp"
-#include "Experimental/Shape/Triangle/Triangle.hpp"
-#include "Experimental/Sprite/Sprite.hpp"
 
 using namespace NRender;
 
-VertexArrayObject CreateVAO() noexcept;
 VertexArrayObject CreateSeparateVAO() noexcept;
-
 VertexArrayObject CreateInstancedVAO() noexcept;
 Instance<GML::Vec2f> CreateInstance() noexcept;
+VertexArrayObject DisposeComplexVertex() noexcept;
+
+VertexArrayObject CreateGeneralInstance() noexcept;
 
 std::vector<GML::Vec2f> CreateInstances() noexcept;
 
@@ -44,7 +38,7 @@ std::int32_t main(std::int32_t argc, char** argv)
     Window window{ "Hello NRender", { 1920, 1080 } };
     Render::Init();
 
-    VertexArrayObject VAO{ CreateSeparateVAO() };
+    VertexArrayObject VAO{ CreateGeneralInstance() };
     VAO.Bind();
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
@@ -56,7 +50,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
 
         window.SwapBuffers();
 
@@ -68,43 +62,6 @@ std::int32_t main(std::int32_t argc, char** argv)
 
 // nastya 
 
-VertexArrayObject CreateVAO() noexcept
-{
-    VertexArrayObject VAO{ true };
-
-    VertexBufferObject VBO{ true };
-    ElementBufferObject EBO{ true };
-
-    std::unique_ptr<const Shape> triangle
-    { 
-        std::make_unique<Triangle>
-        (
-            ColoredVertex{ GML::Vec2f{ 0.0f, 0.5f },
-                GML::Vec3f{ 1.0f, 0.0f, 0.0f } },
-            ColoredVertex{ GML::Vec2f{ 0.5f, -0.5f },
-                GML::Vec3f{ 0.0f, 1.0f, 0.0f } },
-            ColoredVertex{ GML::Vec2f{ -0.5f, -0.5f },
-                GML::Vec3f{ 0.0f, 0.0f, 1.0f } }
-        )
-    };
-    
-    VBO.SetData(triangle->GetVertices(), GL_STATIC_DRAW);
-    EBO.SetData(triangle->GetIndices(), GL_STATIC_DRAW);
-
-    VertexAttribPointer<float> vap0
-    {
-        0, 2, GL_FLOAT, false, 5, 0
-    };
-
-    VertexAttribPointer vap1
-    {
-        vap0.SpawnNext(3)
-    };
-
-    VAO.Unbind();
-
-    return VAO;
-}
 
 VertexArrayObject CreateSeparateVAO() noexcept
 {
@@ -157,7 +114,7 @@ VertexArrayObject CreateInstancedVAO() noexcept
 {
     VertexArrayObject VAO{ true };
 
-    VertexBufferObject VBO{ true };
+    VertexBufferObject baseVBO{ true };
 
     const std::vector<float> vertices
     {
@@ -170,16 +127,16 @@ VertexArrayObject CreateInstancedVAO() noexcept
         0.05f,  0.05f,  0.0f, 1.0f, 1.0f	
     };
 
-    VBO.SetData(vertices, GL_STATIC_DRAW);
+    baseVBO.SetData(vertices, GL_STATIC_DRAW);
 
     VertexAttribPointer<float> vap0
     {
-        0, 2, GL_FLOAT, false, 5, 0
+        0, 2, false, 5 * sizeof(float), 0
     };
-
+    
     VertexAttribPointer<float> vap1
     {
-        vap0.SpawnNext(3)
+        1, 3, false, 5 * sizeof(float), 2 * sizeof(float)
     };
 
     VertexBufferObject instancedVBO{ true };
@@ -188,7 +145,7 @@ VertexArrayObject CreateInstancedVAO() noexcept
 
     VertexAttribPointer<GML::Vec2f> vap2
     {
-        2, 2, GL_FLOAT, false, 2, 0
+        2, 2, false, sizeof(GML::Vec2f), 0
     };
     vap2.SetDivisor(1);
 
@@ -218,6 +175,97 @@ Instance<GML::Vec2f> CreateInstance() noexcept
 
     return instance;
 }
+
+
+struct ComplexVertex
+{
+    GML::Vec2f Position{};
+    GML::Vec3f Color{};
+};
+
+VertexArrayObject DisposeComplexVertex() noexcept
+{
+    VertexArrayObject VAO{ true };
+
+    const std::vector<ComplexVertex> vertices
+    {
+        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f } },
+        { { -0.5f, -0.5f },   { 0.0f, 0.0f, 1.0f } },
+
+        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f } },   
+        { { 0.5f,  0.5f },    { 0.0f, 1.0f, 1.0f } }
+    };
+    
+    VertexBufferObject baseVBO{ true };
+    baseVBO.SetData(vertices, GL_STATIC_DRAW);
+
+    VertexAttribPointer<GML::Vec2f> positionVAP
+    {
+        0, 2, false, sizeof(ComplexVertex), 0
+    };
+
+    VertexAttribPointer<GML::Vec3f>
+    {
+        1, 3, false, sizeof(ComplexVertex), sizeof(GML::Vec2f)
+    };
+
+    VAO.Unbind();
+
+    return VAO;
+}
+
+VertexArrayObject CreateGeneralInstance() noexcept
+{
+    struct InstanceObject
+    {
+        GML::Vec2f Position{};
+        float Scale{};
+    };
+
+
+    VertexArrayObject VAO{ true };
+
+    const std::vector<GML::Vec2f> baseData
+    {
+        { -0.05f,  0.05f },
+        { 0.05f, -0.05f },
+        { -0.05f, -0.05f },
+
+        { -0.05f,  0.05f }, 
+        { 0.05f, -0.05f },
+        { 0.05f,  0.05f }
+    };
+
+    VertexBufferObject baseVBO{ true };
+    baseVBO.SetData(baseData, GL_STATIC_DRAW);
+
+    // SUGGESTION: VertexAttribPointer::_DataType is useless
+
+    VertexAttribPointer<GML::Vec2f> baseVAP
+    {
+        0, 2, false, sizeof(GML::Vec2f), 0
+    };
+
+    const std::vector<GML::Vec2f> instancesData
+    {
+        CreateInstances()
+    };
+
+    VertexBufferObject instancesVBO{ true };
+    instancesVBO.SetData(instancesData, GL_STATIC_DRAW);
+
+    VertexAttribPointer<GML::Vec2f> instancesVAP
+    {
+        1, 2, false, sizeof(GML::Vec2f), 0
+    };
+    instancesVAP.SetDivisor(1);
+
+    VAO.Unbind();
+
+    return VAO;
+};
 
 std::vector<GML::Vec2f> CreateInstances() noexcept
 {

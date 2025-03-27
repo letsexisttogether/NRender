@@ -18,7 +18,7 @@ Sprite::Sprite(const Shape& shape)
 
     VertexAttribPointer vap1
     {
-        vap0.SpawnNext(3)
+        vap0.SpawnNext<float>(3)
     };
 
     VAO.Unbind();
