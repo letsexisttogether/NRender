@@ -9,8 +9,6 @@
 #include <GML/Vector/Definitions.hpp>
 
 #include "Core/Core.hpp"
-#include "Experimental/Vertex/ComplexVertex.hpp"
-#include "Experimental/Vertex/Vertex.hpp"
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 
@@ -19,6 +17,10 @@
 #include "Experimental/VAP/VertexAttribPointer.hpp"
 #include "Experimental/Utility/Convert/GetGLType.hpp"
 #include "Experimental/Vertex/ColorVertex.hpp"
+#include "Experimental/Instance/InstanceSource.hpp"
+#include "Experimental/Sprite/Sprite.hpp"
+#include "Experimental/Vertex/ComplexVertex.hpp"
+#include "Experimental/Vertex/Vertex.hpp"
 
 using namespace NRender;
 
@@ -40,8 +42,29 @@ std::int32_t main(std::int32_t argc, char** argv)
     Window window{ "Hello NRender", { 1920, 1080 } };
     Render::Init();
 
-    VertexArrayObject VAO{ CreateScaledInstance() };
-    VAO.Bind();
+    const std::vector<ColorVertex> baseData
+    {
+        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f } },
+        { { -0.5f, -0.5f },   { 0.0f, 0.0f, 1.0f } },
+
+        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f } },   
+        { { 0.5f,  0.5f },    { 0.0f, 1.0f, 1.0f } }
+    };
+
+    std::vector<ComplexVertex> instances
+    {
+        { { 0.0f,  0.5f },  0.5f },
+        { { 0.0f, -0.5f },  0.5f },
+        { { 0.5f, 0.0f },   0.5f },
+        { { -0.5f, 0.0f },  0.5f },
+    };
+
+    InstanceSource<ColorVertex, ComplexVertex> instanceSource
+    {
+        baseData, std::move(instances)
+    }; 
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
     glUseProgram(gpuProgram);
@@ -52,7 +75,16 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 4);
+        instanceSource.GetVAO().Bind();
+
+        glDrawArraysInstanced(GL_TRIANGLES, 0,
+            instanceSource.GetBaseSize(), instanceSource.GetInstancesSize());
+
+        /*
+        triangles.GetVAO().Bind();
+        glDrawArrays(GL_TRIANGLES, 0, triangles.GetVerticesSize());
+        */
+
 
         window.SwapBuffers();
 
