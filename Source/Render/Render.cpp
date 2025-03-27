@@ -19,14 +19,6 @@ void Render::InitGLEW() noexcept
     assert(glewInit() == GLEW_OK && "Failed to initialize GLEW");
 }
 
-void Render::Draw(Sprite& sprite)
-{
-    VertexArrayObject& VAO = sprite.GetVAO();
-
-    VAO.Bind();
-
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-}
 
 /*
 Nice plane. Delete it

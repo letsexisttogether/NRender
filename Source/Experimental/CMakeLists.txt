@@ -6,6 +6,7 @@ set (EXP_SOURCES
     ${CD}/Boundable/Boundable.cpp
     ${CD}/VAO/VertexArrayObject.cpp
     ${CD}/Buffer/Buffer.cpp
+    ${CD}/VAP/VertexAttribPointer.cpp
     
     ${UTILITY_SOURCES}
 
