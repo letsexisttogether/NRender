@@ -16,14 +16,13 @@ struct Vertex
 template <>
 struct VertexLayout<Vertex>
 {
-    static auto SpawnAttributes()
+    static auto SpawnAttributes(const uint32_t startPosition = 0)
     {
         return std::array<VertexAttribPointer, 1>
         {
-
             VertexAttribPointer
             {
-                0, 2, GetGLType<GML::Vec2f>(),
+                startPosition, 2, GetGLType<GML::Vec2f>(),
                 false, sizeof(Vertex), 0
             }
         };

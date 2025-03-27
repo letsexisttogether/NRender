@@ -8,14 +8,14 @@
 #include "Experimental/Vertex/VertexStructure.hpp"
 #include "Experimental/VAP/VertexAttribPointer.hpp"
 
-struct ColorVertex
+struct ComplexVertex 
 {
     GML::Vec2f Position{};
-    GML::Vec3f Color{};
+    float Scale{};
 };
 
 template <>
-struct VertexLayout<ColorVertex>
+struct VertexLayout<ComplexVertex>
 {
     static auto SpawnAttributes(const std::uint32_t startPosition = 0)
     {
@@ -24,12 +24,12 @@ struct VertexLayout<ColorVertex>
             VertexAttribPointer
             {
                 startPosition, 2, GetGLType<GML::Vec2f>(),
-                false, sizeof(ColorVertex), offsetof(ColorVertex, Position)
+                false, sizeof(ComplexVertex), offsetof(ComplexVertex, Position)
             },
             VertexAttribPointer
             {
-                startPosition + 1, 3, GetGLType<GML::Vec3f>(),
-                false, sizeof(ColorVertex), offsetof(ColorVertex, Color)
+                startPosition + 1, 1, GetGLType<float>(),
+                false, sizeof(ComplexVertex), offsetof(ComplexVertex, Scale)
             }
         };
     }

@@ -9,6 +9,8 @@
 #include <GML/Vector/Definitions.hpp>
 
 #include "Core/Core.hpp"
+#include "Experimental/Vertex/ComplexVertex.hpp"
+#include "Experimental/Vertex/Vertex.hpp"
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 
@@ -24,7 +26,7 @@ VertexArrayObject CreateSeparateVAO() noexcept;
 VertexArrayObject CreateInstancedVAO() noexcept;
 VertexArrayObject CreateVAOColorVertex() noexcept;
 
-VertexArrayObject CreateGeneralInstance() noexcept;
+VertexArrayObject CreateScaledInstance() noexcept;
 
 std::vector<GML::Vec2f> CreateInstances() noexcept;
 
@@ -38,7 +40,7 @@ std::int32_t main(std::int32_t argc, char** argv)
     Window window{ "Hello NRender", { 1920, 1080 } };
     Render::Init();
 
-    VertexArrayObject VAO{ CreateVAOColorVertex() };
+    VertexArrayObject VAO{ CreateScaledInstance() };
     VAO.Bind();
 
     const std::uint32_t gpuProgram = CreateGPUProgram();
@@ -50,7 +52,7 @@ std::int32_t main(std::int32_t argc, char** argv)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 4);
 
         window.SwapBuffers();
 
@@ -181,51 +183,43 @@ VertexArrayObject CreateVAOColorVertex() noexcept
     return VAO;
 }
 
-VertexArrayObject CreateGeneralInstance() noexcept
+VertexArrayObject CreateScaledInstance() noexcept
 {
-    struct InstanceObject
-    {
-        GML::Vec2f Position{};
-        float Scale{};
-    };
-
-
     VertexArrayObject VAO{ true };
 
-    const std::vector<GML::Vec2f> baseData
+    const std::vector<ColorVertex> baseData
     {
-        { -0.05f,  0.05f },
-        { 0.05f, -0.05f },
-        { -0.05f, -0.05f },
+        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f } },
+        { { -0.5f, -0.5f },   { 0.0f, 0.0f, 1.0f } },
 
-        { -0.05f,  0.05f }, 
-        { 0.05f, -0.05f },
-        { 0.05f,  0.05f }
+        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f } },   
+        { { 0.5f,  0.5f },    { 0.0f, 1.0f, 1.0f } }
     };
 
     VertexBufferObject baseVBO{ true };
     baseVBO.SetData(baseData, GL_STATIC_DRAW);
 
-    // SUGGESTION: VertexAttribPointer::_DataType is useless
+    auto baseAttributes = VertexLayout<ColorVertex>::SpawnAttributes();
 
-    VertexAttribPointer baseVAP
+    const std::vector<ComplexVertex> instancesData
     {
-        0, 2, GetGLType<GML::Vec2f>(), false, sizeof(GML::Vec2f), 0
-    };
-
-    const std::vector<GML::Vec2f> instancesData
-    {
-        CreateInstances()
+        { { 0.0f,  0.5f },  0.5f },
+        { { 0.0f, -0.5f },  0.5f },
+        { { 0.5f, 0.0f },   0.5f },
+        { { -0.5f, 0.0f },  0.5f },
     };
 
     VertexBufferObject instancesVBO{ true };
     instancesVBO.SetData(instancesData, GL_STATIC_DRAW);
 
-    VertexAttribPointer instancesVAP
+    auto attributes = VertexLayout<ComplexVertex>::SpawnAttributes(2);
+
+    for (auto& attribute : attributes)
     {
-        1, 2, GetGLType<GML::Vec2f>(), false, sizeof(GML::Vec2f), 0
-    };
-    instancesVAP.SetDivisor(1);
+        attribute.SetDivisor(1);
+    }
 
     VAO.Unbind();
 
