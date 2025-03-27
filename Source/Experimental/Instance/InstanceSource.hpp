@@ -24,8 +24,8 @@ public:
 
     ~InstanceSource() = default;
 
-    _InstanceVertex GetInstance(const std::size_t ID) const noexcept;
-    void SetInstance(const std::size_t ID, const _InstanceVertex vertex) noexcept;
+    const _InstanceVertex& GetInstance(const std::size_t ID) const noexcept;
+    void SetInstance(const std::size_t ID, _InstanceVertex&& vertex) noexcept;
 
     VertexArrayObject& GetVAO() noexcept;
 
@@ -68,6 +68,35 @@ InstanceSource<_BaseVertex, _InstanceVertex>::InstanceSource
 
     m_VAO.Unbind();
 }
+
+
+template <class _BaseVertex, class _InstanceVertex>
+const _InstanceVertex& InstanceSource<_BaseVertex, _InstanceVertex>::
+    GetInstance(const std::size_t ID) const noexcept
+{
+    assert(m_Instances.size() > ID
+        && "[Instance::GetInstance] Unallowed index");
+
+    return m_Instances[ID];
+}
+
+template <class _BaseVertex, class _InstanceVertex>
+void InstanceSource<_BaseVertex, _InstanceVertex>::
+    SetInstance(const std::size_t ID, _InstanceVertex&& vertex) noexcept
+{
+    assert(m_Instances.size() > ID
+        && "[Instance::GetInstance] Unallowed index");
+
+    m_InstancedVBO.Bind();
+
+    _InstanceVertex& instance = m_Instances[ID];
+    instance = std::move(vertex);
+
+    m_InstancedVBO.SetSubData(instance, sizeof(instance) * ID);
+
+    m_InstancedVBO.Unbind();
+}
+
 
 template <class _BaseVertex, class _InstanceVertex>
 VertexArrayObject& InstanceSource<_BaseVertex, _InstanceVertex>::

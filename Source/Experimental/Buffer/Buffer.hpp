@@ -29,6 +29,7 @@ public:
     template <typename _Type>
     void SetSubData(const std::vector<_Type>& data, const std::size_t offset)
         noexcept;
+
     template <typename _Type>
     void SetSubData(const _Type& data, const std::size_t offset) noexcept;
 

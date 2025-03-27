@@ -5,10 +5,12 @@
 #include <fstream>
 #include <ios>
 #include <vector>
+#include <chrono>
 
 #include <GML/Vector/Definitions.hpp>
 
 #include "Core/Core.hpp"
+#include "GLFW/glfw3.h"
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 
@@ -66,12 +68,29 @@ std::int32_t main(std::int32_t argc, char** argv)
         baseData, std::move(instances)
     }; 
 
+
     const std::uint32_t gpuProgram = CreateGPUProgram();
     glUseProgram(gpuProgram);
+
+    float animationStart = glfwGetTime();
+    float animationMultiplier = 1.0f;
 
     while (!window.ShouldClose())
     {
         const float time = glfwGetTime();
+
+        if (const float passedTime = time - animationStart;
+            passedTime > 2.0f)
+        {
+            auto instance = instanceSource.GetInstance(3);
+            instance.Position.X() += 0.5 * animationMultiplier; 
+
+            instanceSource.SetInstance(3, std::move(instance));
+
+            animationMultiplier = -animationMultiplier;
+            animationStart = time;
+        }
+
 
         glClear(GL_COLOR_BUFFER_BIT);
 
