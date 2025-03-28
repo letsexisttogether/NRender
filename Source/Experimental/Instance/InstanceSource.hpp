@@ -6,7 +6,7 @@
 #include "Experimental/Buffer/Buffer.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
 #include "Experimental/VAP/VertexAttribPointer.hpp"
-#include "Experimental/Vertex/VertexStructure.hpp"
+#include "Experimental/Vertex/VertexLayout.hpp"
 
 template <class _BaseVertex, class _InstanceVertex>
 class InstanceSource

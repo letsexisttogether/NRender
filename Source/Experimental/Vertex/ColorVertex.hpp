@@ -5,7 +5,7 @@
 #include <cstddef>
 
 #include "Experimental/Utility/Convert/GetGLType.hpp"
-#include "Experimental/Vertex/VertexStructure.hpp"
+#include "Experimental/Vertex/VertexLayout.hpp"
 #include "Experimental/VAP/VertexAttribPointer.hpp"
 
 struct ColorVertex

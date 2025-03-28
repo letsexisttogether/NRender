@@ -4,7 +4,7 @@
 
 #include "Experimental/Buffer/Buffer.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
-#include "Experimental/Vertex/VertexStructure.hpp"
+#include "Experimental/Vertex/VertexLayout.hpp"
 
 template <class _Vertex>
 class Sprite
