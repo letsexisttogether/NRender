@@ -8,6 +8,7 @@
 #include <chrono>
 
 #include <GML/Vector/Definitions.hpp>
+#include <yvals.h>
 
 #include "Core/Core.hpp"
 #include "GLFW/glfw3.h"
@@ -23,6 +24,8 @@
 #include "Experimental/Sprite/Sprite.hpp"
 #include "Experimental/Vertex/ComplexVertex.hpp"
 #include "Experimental/Vertex/Vertex.hpp"
+#include "Experimental/Instance/Manger/InstanceManager.hpp"
+#include "Experimental/GPUProgram/GPUProgram.hpp"
 
 using namespace NRender;
 
@@ -34,6 +37,7 @@ VertexArrayObject CreateScaledInstance() noexcept;
 
 std::vector<GML::Vec2f> CreateInstances() noexcept;
 
+GPUProgram CreateModernGPUProgram() noexcept;
 std::uint32_t CreateGPUProgram() noexcept;
 
 std::vector<char> ReadShader(const std::string& fileName) noexcept;
@@ -68,9 +72,20 @@ std::int32_t main(std::int32_t argc, char** argv)
         baseData, std::move(instances)
     }; 
 
+    /*
+    InstanceManager manager{};
 
+    const std::int32_t id = manager.AddInstance(std::move(instanceSource));
+    auto& aquiredInstance = manager.GetInstance<ColorVertex, ComplexVertex>(id);
+    */
+
+    /*
     const std::uint32_t gpuProgram = CreateGPUProgram();
     glUseProgram(gpuProgram);
+    */
+
+    GPUProgram gpuProgram{ CreateModernGPUProgram() };
+    gpuProgram.Bind();
 
     float animationStart = glfwGetTime();
     float animationMultiplier = 1.0f;
@@ -299,6 +314,22 @@ std::vector<GML::Vec2f> CreateInstances() noexcept
     }
     
     return offsets;
+}
+
+
+GPUProgram CreateModernGPUProgram() noexcept
+{
+    Shader vertexShader{ GL_VERTEX_SHADER, "shader.vert" };
+    Shader fragmentShader{ GL_FRAGMENT_SHADER, "shader.frag" };
+
+    GPUProgram gpuProgram
+    { 
+        std::move(vertexShader),
+        std::move(fragmentShader),
+        false
+    };
+
+    return gpuProgram;
 }
 
 std::uint32_t CreateGPUProgram() noexcept
