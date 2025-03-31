@@ -8,6 +8,7 @@ set (EXP_SOURCES
     ${CD}/VAO/VertexArrayObject.cpp
     ${CD}/Buffer/Buffer.cpp
     ${CD}/VAP/VertexAttribPointer.cpp
+    ${CD}/Test/Test.cpp
 
     ${GPU_PROGRAM_SOURCES}
     ${UTILITY_SOURCES}
