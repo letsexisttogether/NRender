@@ -12,14 +12,15 @@ struct ColorVertex
 {
     GML::Vec2f Position{};
     GML::Vec3f Color{};
+    GML::Vec2f UV{};
 };
 
 template <>
 struct VertexLayout<ColorVertex>
 {
-    static auto SpawnAttributes(const std::uint32_t startPosition = 0)
+    static auto SpawnAttributes(std::uint32_t startPosition = 0)
     {
-        return std::array<VertexAttribPointer, 2>
+        return std::array<VertexAttribPointer, 3>
         {
             VertexAttribPointer
             {
@@ -28,9 +29,14 @@ struct VertexLayout<ColorVertex>
             },
             VertexAttribPointer
             {
-                startPosition + 1, 3, GetGLType<GML::Vec3f>(),
+                ++startPosition, 3, GetGLType<GML::Vec3f>(),
                 false, sizeof(ColorVertex), offsetof(ColorVertex, Color)
-            }
+            },
+            VertexAttribPointer
+            {
+                ++startPosition, 2, GetGLType<GML::Vec2f>(),
+                false, sizeof(ColorVertex), offsetof(ColorVertex, UV)
+            },
         };
     }
 };

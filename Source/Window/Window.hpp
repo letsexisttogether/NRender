@@ -31,6 +31,8 @@ public:
 
     void SwapBuffers() noexcept;
 
+    GLFWwindow* GetBaseWindow() noexcept;
+
     const Title& GetTitle() const noexcept;
     void SetTitle(const Title& title) noexcept;
 

@@ -39,6 +39,11 @@ void Window::SwapBuffers() noexcept
     glfwSwapBuffers(m_BaseWindow);
 }
 
+GLFWwindow* Window::GetBaseWindow() noexcept
+{
+    return m_BaseWindow;
+}
+
 const Window::Title& Window::GetTitle() const noexcept
 {
     return m_Title;

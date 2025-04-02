@@ -1,6 +1,26 @@
 #include "Test.hpp"
+#include "Core/Core.hpp"
+#include "Experimental/Texture/Texture.hpp"
+#include "Experimental/Utility/Convert/GetGLType.hpp"
 
+#include <array>
 #include <fstream>
+#include <utility>
+
+Player::Player(InstanceSource<ColorVertex, ComplexVertex>& instanceSource,
+    const std::uint32_t instanceID) noexcept
+    : m_InstanceSource{ instanceSource }, m_InstanceID{ instanceID }
+{}
+
+void Player::Move(const GML::Vec2f distance) noexcept
+{
+    auto instance = m_InstanceSource.GetInstance(m_InstanceID);
+
+    instance.Position.X() += distance.X();
+    instance.Position.Y() += distance.Y();
+
+    m_InstanceSource.SetInstance(m_InstanceID, std::move(instance));
+}
 
 VertexArrayObject CreateSeparateVAO() noexcept
 {
@@ -203,6 +223,58 @@ GPUProgram CreateModernGPUProgram() noexcept
     return gpuProgram;
 }
 
+/*
+std::uint32_t CreateTexture() noexcept
+{
+    constexpr GLenum textureType = GL_TEXTURE_2D;
+
+    std::uint32_t textureID{};
+    glGenTextures(1, &textureID);
+    glBindTexture(textureType, textureID);
+
+    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    constexpr std::array<float, 4> borderColor
+    {
+        1.0f, 1.0f, 0.0f, 1.0f
+    };
+    glTexParameterfv(textureType, GL_TEXTURE_BORDER_COLOR, borderColor.data());
+
+    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    std::int32_t width{};
+    std::int32_t height{};
+    std::int32_t nrChannels{};
+
+    // Flip the texture
+    stbi_set_flip_vertically_on_load(true);  
+
+    std::uint8_t* textureRawData = stbi_load("container.jpg", &width, &height,
+        &nrChannels, 0);
+
+    assert(textureRawData && "The data was not loaded properly");
+
+    glTexImage2D(textureType, 0, GL_RGB, width, height, 0, GL_RGB,
+        GetGLType<std::uint8_t>(), textureRawData);
+
+    stbi_image_free(textureRawData);
+
+    return textureID;
+}
+*/
+
+Texture CreateModernTexture() noexcept
+{
+    const std::filesystem::path path{ "container.jpg" };
+
+    Texture texture{ path, GL_TEXTURE0, GL_TEXTURE_2D, {} };
+    texture.Unbind();
+
+    return texture;
+}
+
 std::uint32_t CreateGPUProgram() noexcept
 {
     const std::uint32_t gpuProgram = glCreateProgram();
@@ -249,4 +321,9 @@ std::vector<char> ReadShader(const std::string& fileName) noexcept
     inputStream.read(shader.data(), fileSize);
 
     return shader;
+}
+
+bool IsKeyPressed(NRender::Window& window, const std::int32_t key) noexcept
+{
+    return glfwGetKey(window.GetBaseWindow(), key) == GLFW_PRESS;
 }

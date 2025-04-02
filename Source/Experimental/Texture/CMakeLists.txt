@@ -1,0 +1,7 @@
+set(CD ${CMAKE_CURRENT_SOURCE_DIR})
+
+set (TEXTURE_SOURCE
+    ${CD}/Texture.cpp
+
+    PARENT_SCOPE
+)

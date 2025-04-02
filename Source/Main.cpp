@@ -4,7 +4,6 @@
 #include <vector>
 
 #include <GML/Vector/Definitions.hpp>
-#include <yvals.h>
 
 #include "Core/Core.hpp"
 #include "GLFW/glfw3.h"
@@ -24,13 +23,13 @@ std::int32_t main(std::int32_t argc, char** argv)
 
     const std::vector<ColorVertex> baseData
     {
-        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f } },
-        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f } },
-        { { -0.5f, -0.5f },   { 0.0f, 0.0f, 1.0f } },
+        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } },
+        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f } },
+        { { -0.5f, -0.5f },   { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } },
 
-        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f } },
-        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f } },   
-        { { 0.5f,  0.5f },    { 0.0f, 1.0f, 1.0f } }
+        { { -0.5f,  0.5f },   { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } },
+        { { 0.5f, -0.5f },    { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f } },
+        { { 0.5f,  0.5f },    { 0.0f, 1.0f, 1.0f }, { 1.0f, 1.0f } }
     };
 
     std::vector<ComplexVertex> instances
@@ -46,6 +45,9 @@ std::int32_t main(std::int32_t argc, char** argv)
         baseData, std::move(instances)
     }; 
 
+    Texture texture{ CreateModernTexture() };
+    texture.Bind();
+
     /*
     InstanceManager manager{};
 
@@ -58,28 +60,19 @@ std::int32_t main(std::int32_t argc, char** argv)
     glUseProgram(gpuProgram);
     */
 
+    Player player{ instanceSource, 3 };
+
     GPUProgram gpuProgram{ CreateModernGPUProgram() };
     gpuProgram.Bind();
 
-    float animationStart = glfwGetTime();
-    float animationMultiplier = 1.0f;
+    float previousTime = glfwGetTime();
 
     while (!window.ShouldClose())
     {
         const float time = glfwGetTime();
 
-        if (const float passedTime = time - animationStart;
-            passedTime > 2.0f)
-        {
-            auto instance = instanceSource.GetInstance(3);
-            instance.Position.X() += 0.5 * animationMultiplier; 
-
-            instanceSource.SetInstance(3, std::move(instance));
-
-            animationMultiplier = -animationMultiplier;
-            animationStart = time;
-        }
-
+        const float deltaTime = (time - previousTime);
+        previousTime = time;
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -88,6 +81,28 @@ std::int32_t main(std::int32_t argc, char** argv)
         glDrawArraysInstanced(GL_TRIANGLES, 0,
             instanceSource.GetBaseSize(), instanceSource.GetInstancesSize());
 
+        const float speedUp = ((IsKeyPressed(window, GLFW_KEY_LEFT_SHIFT) ?
+            (0.4f) : (0.0f)));
+
+        const float distance = (0.1f + speedUp) * deltaTime;
+
+        if (IsKeyPressed(window, GLFW_KEY_W))
+        {
+            player.Move(GML::Vec2f{ 0.0f, distance });
+        }
+        else if (IsKeyPressed(window, GLFW_KEY_S))
+        {
+            player.Move(GML::Vec2f{ 0.0f, -distance });
+        }
+        if (IsKeyPressed(window, GLFW_KEY_D))
+        {
+            player.Move(GML::Vec2f{ distance, 0.0f });
+        }
+        else if (IsKeyPressed(window, GLFW_KEY_A))
+        {
+            player.Move(GML::Vec2f{ -distance, 0.0f });
+        }
+        
         /*
         triangles.GetVAO().Bind();
         glDrawArrays(GL_TRIANGLES, 0, triangles.GetVerticesSize());
