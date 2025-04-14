@@ -16,7 +16,9 @@ Texture::Texture(const std::filesystem::path& path, const GLenum slot,
     const GLenum type, const TextureSettings& settings) noexcept
     : m_Path{ path }, m_Slot{ slot }, m_Type{ type }, m_Settings{ settings }
 {
-    assert(std::filesystem::exists(path) && "The texture file does not exsit");
+    // TODO: Move the reading functionality to a dedicated class
+    assert(std::filesystem::exists(path)
+        && "The texture file does not exsit");
     
     Init(true);  
 }

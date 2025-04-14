@@ -1,8 +1,9 @@
 #include "Shader.hpp"
-#include "Core/Core.hpp"
 
 #include <cassert>
 #include <fstream>
+
+#include "Core/Core.hpp"
 
 Shader::Shader(const GLenum type, Code&& code) noexcept
     : m_Type{ type }, m_Code{ std::move(code) }
@@ -25,14 +26,16 @@ Shader::~Shader()
 
 void Shader::Bind() noexcept
 {
-    assert(m_ProgramID != 0 && "[Shader::Generate] The program ID is invalid");
+    assert(m_ProgramID != 0 && "[Shader::Generate] "
+        "The program ID is invalid");
 
     glAttachShader(m_ProgramID, m_ID);
 }
 
 void Shader::Unbind() noexcept
 {
-    assert(m_ProgramID != 0 && "[Shader::Generate] The program ID is invalid");
+    assert(m_ProgramID != 0 && "[Shader::Generate] "
+        "The program ID is invalid");
 
     glDetachShader(m_ProgramID, m_ID);
 }
@@ -63,6 +66,7 @@ void Shader::Generate() noexcept
 }
 
 // SUGGESTION: Use a file reader
+// UPDATE: I don't see it as a great idea 
 void Shader::ReadCodeFromFile(const std::filesystem::path& path) noexcept
 {
     assert(std::filesystem::exists(path) && "File does not exist");

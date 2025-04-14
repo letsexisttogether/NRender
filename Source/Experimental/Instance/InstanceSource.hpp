@@ -69,7 +69,6 @@ InstanceSource<_BaseVertex, _InstanceVertex>::InstanceSource
     m_VAO.Unbind();
 }
 
-
 template <class _BaseVertex, class _InstanceVertex>
 const _InstanceVertex& InstanceSource<_BaseVertex, _InstanceVertex>::
     GetInstance(const std::size_t ID) const noexcept

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include "Experimental/Boundable/Boundable.hpp"
 
 class VertexArrayObject : protected Boundable

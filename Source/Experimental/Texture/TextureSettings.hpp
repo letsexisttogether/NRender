@@ -15,4 +15,3 @@ struct TextureSettings
     GLenum StoreColorFormat{ GL_RGB };
     GLenum OriginalColorFormat{ GL_RGB };
 };
-
