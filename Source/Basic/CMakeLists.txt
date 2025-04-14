@@ -1,7 +1,0 @@
-add_subdirectory(AttributePointer)
-add_subdirectory(Boundable)
-add_subdirectory(Buffer)
-add_subdirectory(GPUProgram)
-add_subdirectory(Shader)
-add_subdirectory(Texture)
-add_subdirectory(VertexArray)
