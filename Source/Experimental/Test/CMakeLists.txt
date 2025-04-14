@@ -1,0 +1,7 @@
+set(CD ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(TEST_SOURCES
+    ${CD}/Test.cpp
+
+    PARENT_SCOPE
+)

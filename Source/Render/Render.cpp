@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-#include "Experimental/Sprite/Sprite.hpp"
 #include "Experimental/VAO/VertexArrayObject.hpp"
 
 NRenderSpaceStart
