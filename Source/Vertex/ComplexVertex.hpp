@@ -4,9 +4,9 @@
 #include <array>
 #include <cstddef>
 
-#include "Experimental/Utility/Convert/GetGLType.hpp"
-#include "Experimental/Vertex/VertexLayout.hpp"
-#include "Experimental/VAP/VertexAttribPointer.hpp"
+#include "Utility/Convert/GetGLType.hpp"
+#include "Vertex/VertexLayout.hpp"
+#include "VAP/VertexAttribPointer.hpp"
 
 struct ComplexVertex 
 {

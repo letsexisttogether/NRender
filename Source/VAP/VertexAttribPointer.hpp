@@ -3,7 +3,7 @@
 #include <cstddef>
 
 #include "Core/Core.hpp"
-#include "Experimental/Boundable/Boundable.hpp"
+#include "Boundable/Boundable.hpp"
 
 class VertexAttribPointer : protected Boundable
 {

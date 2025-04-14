@@ -4,8 +4,8 @@
 #include <array>
 
 #include "Core/Core.hpp"
-#include "Experimental/Boundable/Boundable.hpp"
-#include "Experimental/Texture/TextureSettings.hpp"
+#include "Boundable/Boundable.hpp"
+#include "Texture/TextureSettings.hpp"
 
 class Texture : protected Boundable
 {

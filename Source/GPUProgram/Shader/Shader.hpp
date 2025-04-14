@@ -3,7 +3,7 @@
 #include <filesystem>
 
 #include "Core/Core.hpp"
-#include "Experimental/Boundable/Boundable.hpp"
+#include "Boundable/Boundable.hpp"
 
 class Shader : protected Boundable
 {

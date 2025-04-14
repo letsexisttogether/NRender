@@ -10,7 +10,7 @@
 #include <GML/Vector/Definitions.hpp>
 
 #include "Core/Core.hpp"
-#include "Experimental/Utility/Convert/GetGLType.hpp"
+#include "Utility/Convert/GetGLType.hpp"
 
 Texture::Texture(const std::filesystem::path& path, const GLenum slot,
     const GLenum type, const TextureSettings& settings) noexcept

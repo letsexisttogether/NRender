@@ -1,11 +1,13 @@
 #include "Test.hpp"
-#include "Core/Core.hpp"
-#include "Experimental/Texture/Texture.hpp"
-#include "Experimental/Utility/Convert/GetGLType.hpp"
 
 #include <array>
 #include <fstream>
 #include <utility>
+
+
+#include "Core/Core.hpp"
+#include "Texture/Texture.hpp"
+#include "Utility/Convert/GetGLType.hpp"
 
 Player::Player(InstanceSource<ColorVertex, ComplexVertex>& instanceSource,
     const std::uint32_t instanceID) noexcept

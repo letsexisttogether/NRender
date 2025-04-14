@@ -3,10 +3,10 @@
 #include <algorithm>
 #include <vector>
 
-#include "Experimental/Buffer/Buffer.hpp"
-#include "Experimental/VAO/VertexArrayObject.hpp"
-#include "Experimental/VAP/VertexAttribPointer.hpp"
-#include "Experimental/Vertex/VertexLayout.hpp"
+#include "Buffer/Buffer.hpp"
+#include "VAO/VertexArrayObject.hpp"
+#include "VAP/VertexAttribPointer.hpp"
+#include "Vertex/VertexLayout.hpp"
 
 template <class _BaseVertex, class _InstanceVertex>
 class InstanceSource

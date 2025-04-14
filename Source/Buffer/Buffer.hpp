@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Core/Core.hpp"
-#include "Experimental/Boundable/Boundable.hpp"
+#include "Boundable/Boundable.hpp"
 
 template <GLenum _BufferType>
 class Buffer : protected Boundable

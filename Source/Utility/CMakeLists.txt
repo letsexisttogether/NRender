@@ -1,1 +1,6 @@
-# Add if neccessary
+set(CD ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(UTILITY_SOURCES
+
+    PARENT_SCOPE
+)

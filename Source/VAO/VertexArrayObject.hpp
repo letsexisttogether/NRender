@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Experimental/Boundable/Boundable.hpp"
+#include "Boundable/Boundable.hpp"
 
 class VertexArrayObject : protected Boundable
 {

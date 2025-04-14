@@ -3,15 +3,15 @@
 #include <vector>
 #include <GML/Vector/Definitions.hpp>
 
-#include "Experimental/Texture/Texture.hpp"
+#include "Texture/Texture.hpp"
 #include "Window/Window.hpp"
-#include "Experimental/VAO/VertexArrayObject.hpp"
-#include "Experimental/GPUProgram/GPUProgram.hpp"
-#include "Experimental/Buffer/Buffer.hpp"
-#include "Experimental/VAP/VertexAttribPointer.hpp"
-#include "Experimental/Vertex/ColorVertex.hpp"
-#include "Experimental/Vertex/ComplexVertex.hpp"
-#include "Experimental/Instance/InstanceSource.hpp"
+#include "VAO/VertexArrayObject.hpp"
+#include "GPUProgram/GPUProgram.hpp"
+#include "Buffer/Buffer.hpp"
+#include "VAP/VertexAttribPointer.hpp"
+#include "Vertex/ColorVertex.hpp"
+#include "Vertex/ComplexVertex.hpp"
+#include "Instance/InstanceSource.hpp"
 
 class Player
 {

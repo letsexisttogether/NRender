@@ -10,8 +10,8 @@
 #include "Render/Render.hpp"
 #include "Window/Window.hpp"
 
-#include "Experimental/Test/Test.hpp"
-#include "Experimental/Instance/InstanceSource.hpp"
+#include "Test/Test.hpp"
+#include "Instance/InstanceSource.hpp"
 
 using namespace NRender;
 

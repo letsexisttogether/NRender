@@ -2,8 +2,6 @@
 
 #include <cassert>
 
-#include "Experimental/VAO/VertexArrayObject.hpp"
-
 NRenderSpaceStart
 
 void Render::Init() noexcept

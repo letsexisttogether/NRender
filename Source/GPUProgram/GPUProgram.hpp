@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Experimental/Boundable/Boundable.hpp"
-#include "Experimental/GPUProgram/Shader/Shader.hpp"
+#include "GPUProgram/Shader/Shader.hpp"
 
 class GPUProgram : protected Boundable
 {
