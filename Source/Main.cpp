@@ -48,18 +48,6 @@ std::int32_t main(std::int32_t argc, char** argv)
     Texture texture{ CreateModernTexture() };
     texture.Bind();
 
-    /*
-    InstanceManager manager{};
-
-    const std::int32_t id = manager.AddInstance(std::move(instanceSource));
-    auto& aquiredInstance = manager.GetInstance<ColorVertex, ComplexVertex>(id);
-    */
-
-    /*
-    const std::uint32_t gpuProgram = CreateGPUProgram();
-    glUseProgram(gpuProgram);
-    */
-
     Player player{ instanceSource, 3 };
 
     GPUProgram gpuProgram{ CreateModernGPUProgram() };
